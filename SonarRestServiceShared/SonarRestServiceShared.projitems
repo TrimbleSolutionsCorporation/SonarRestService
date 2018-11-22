@@ -1,0 +1,47 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <MSBuildAllProjects>$(MSBuildAllProjects);$(MSBuildThisFileFullPath)</MSBuildAllProjects>
+    <HasSharedItems>true</HasSharedItems>
+    <SharedGUID>4ba55ea8-4b9a-4568-906d-262123477d26</SharedGUID>
+  </PropertyGroup>
+  <PropertyGroup Label="Configuration">
+    <Import_RootNamespace>SonarRestServiceShared</Import_RootNamespace>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="$(MSBuildThisFileDirectory)IRestLogger.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ISonarRestService.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Types\Alert.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Types\BlameInformation.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Types\BranchCoverage.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Types\Characteristic.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Types\Comment.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Types\ConnectionConfiguration.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Types\CoverageDifferencial.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Types\CoverageReport.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Types\DuplicatedBlock.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Types\DuplicatedGroup.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Types\DuplicationData.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Types\Exclusion.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Types\ExplanationLine.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Types\ISonarConfiguration.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Types\Issue.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Types\KeyLookupType.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Types\Line.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Types\LineCoverage.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Types\Metric.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Types\Profile.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Types\Resource.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Types\Rule.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Types\RuleParam.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Types\Setting.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Types\SonarProject.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Types\SonarQubeProperties.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Types\Source.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Types\SourceCoverage.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Types\SqaleConstants.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Types\SqaleDefaultModel.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Types\SubCharacteristics.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Types\User.cs" />
+  </ItemGroup>
+</Project>

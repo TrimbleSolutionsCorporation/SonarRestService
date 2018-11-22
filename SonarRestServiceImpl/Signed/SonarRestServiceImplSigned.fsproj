@@ -1,0 +1,48 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <Version>8.0.0-alpha007</Version>
+    <TargetFrameworks>netstandard2.0;net452</TargetFrameworks>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <AssemblyVersion>8.0.0.0</AssemblyVersion>
+    <FileVersion>8.0.0.0</FileVersion>
+    <SignAssembly>true</SignAssembly>
+    <AssemblyOriginatorKeyFile>..\AssemblyKey.snk</AssemblyOriginatorKeyFile>
+    <OutputPath>..\..\BuildDrop\Signed</OutputPath>
+    <AssemblyName>SonarRestServiceImpl</AssemblyName>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Include="..\AssemblyInfo.fs" />
+    <Compile Include="..\TypeProviders.fs" />
+    <Compile Include="..\XmlTypeProviders.fs" />
+    <Compile Include="..\IHttpSonarConnector.fs" />
+    <Compile Include="..\SqaleDefaultModel.fs" />
+    <Compile Include="..\SourceService.fs" />
+    <Compile Include="..\AnalysisService.fs" />
+    <Compile Include="..\ComponentService.fs" />
+    <Compile Include="..\DifferencialService.fs" />
+    <Compile Include="..\HttpSonarConnector.fs" />
+    <Compile Include="..\IssuesService.fs" />
+    <Compile Include="..\MeasuresService.fs" />
+    <Compile Include="..\SettingsService.fs" />
+    <Compile Include="..\SonarRestService.fs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="..\default-model.xml" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="..\SonarRestService.licenseheader" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="FSharp.Data" Version="3.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\SonarRestServiceSigned\SonarRestServiceSigned.csproj" />
+  </ItemGroup>
+
+</Project>
