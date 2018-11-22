@@ -323,7 +323,7 @@ type SonarService(httpconnector : IHttpSonarConnector) =
         newRule.ConfigKey <-  try parsedDataRule.InternalKey with | ex -> ""
         newRule.Repo <- parsedDataRule.Repo
         newRule.Name <- parsedDataRule.Name
-        newRule.CreatedAt <- parsedDataRule.CreatedAt.DateTime
+        newRule.CreatedAt <- DateTime.Parse(parsedDataRule.CreatedAt)
         newRule.Severity <- try (EnumHelper.asEnum<Severity>(parsedDataRule.Severity)).Value with | ex -> Severity.UNDEFINED
         newRule.Status <- try (EnumHelper.asEnum<Status>(parsedDataRule.Status)).Value with | ex -> Status.UNDEFINED
         newRule.InternalKey <- try parsedDataRule.InternalKey with | ex -> ""
@@ -393,7 +393,7 @@ type SonarService(httpconnector : IHttpSonarConnector) =
 
         if IfExists("name") then rule.Name <- parsedDataRule.Name
         if IfExists("type") then rule.Type <- parsedDataRule.Type
-        if IfExists("createdAt") then rule.CreatedAt <- parsedDataRule.CreatedAt.DateTime
+        if IfExists("createdAt") then rule.CreatedAt <- DateTime.Parse(parsedDataRule.CreatedAt)
         if not(skipSeverity) then
             if IfExists("severity") then rule.Severity <- try (EnumHelper.asEnum<Severity>(parsedDataRule.Severity)).Value with | ex -> Severity.UNDEFINED
 
@@ -507,7 +507,7 @@ type SonarService(httpconnector : IHttpSonarConnector) =
 
         if IfExists("repo") then newRule.Repo <- parsedDataRule.Repo
         if IfExists("name") then newRule.Name <- parsedDataRule.Name
-        if IfExists("createdAt") then newRule.CreatedAt <- parsedDataRule.CreatedAt.DateTime
+        if IfExists("createdAt") then newRule.CreatedAt <- DateTime.Parse(parsedDataRule.CreatedAt)
         if IfExists("severity") then newRule.Severity <- try (EnumHelper.asEnum<Severity>(parsedDataRule.Severity)).Value with | ex -> Severity.UNDEFINED
         if IfExists("status") then newRule.Status <- try (EnumHelper.asEnum<Status>(parsedDataRule.Status)).Value with | ex -> Status.UNDEFINED
         if IfExists("internalKey") then newRule.InternalKey <- parsedDataRule.InternalKey

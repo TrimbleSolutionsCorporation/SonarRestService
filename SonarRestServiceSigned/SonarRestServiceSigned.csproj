@@ -1,17 +1,19 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <Version>8.0.0</Version>
+    <Version>1.0.0</Version>
     <TargetFrameworks>netstandard2.0;net452</TargetFrameworks>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-    <AssemblyVersion>8.0.0.0</AssemblyVersion>
-    <FileVersion>8.0.0.0</FileVersion>
+    <AssemblyVersion>1.0.0.0</AssemblyVersion>
+    <FileVersion>1.0.0.0</FileVersion>
     <SignAssembly>true</SignAssembly>
     <AssemblyOriginatorKeyFile>..\AssemblyKey.snk</AssemblyOriginatorKeyFile>
     <OutputPath>..\BuildDrop\Signed</OutputPath>
     <AssemblyName>SonarRestService</AssemblyName>
     <RootNamespace>SonarRestService</RootNamespace>
     <PackageId>SonarRestServiceSigned</PackageId>
+    <Authors>Jorge Costa</Authors>
+    <Company>Trimble Solutions Corporation</Company>
   </PropertyGroup>
 
   <ItemGroup>
