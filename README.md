@@ -1,7 +1,7 @@
 SonarRestService
 ====================
 
-[![Build status](https://ci.appveyor.com/api/projects/status/w03onktfvppbimow/branch/master?svg=true)](https://ci.appveyor.com/project/TrimbleSolutionsCorporation/vssonarqubeextension/branch/master)
+[![Build status](https://ci.appveyor.com/api/projects/status/3c23a8q5kh8v3sw7?svg=true)](https://ci.appveyor.com/project/jorgecosta/sonarrestservice)
 
 This is a .net library to talk with SonarQube.
 
