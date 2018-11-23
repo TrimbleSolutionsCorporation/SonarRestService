@@ -8,6 +8,9 @@ This is a .net library to talk with SonarQube.
 # Installation
 Install-Package SonarRestServiceImpl
 
+# Usage
+See Tests
+
 # License
 
 This program is free software; you can redistribute it and/or modify it under the terms of the GNU Lesser General Public License
