@@ -20,24 +20,8 @@ type SourceServiceTest() =
     let assemblyRunningPath = Directory.GetParent(Assembly.GetExecutingAssembly().Location).ToString()
 
     [<Test>]
-    member test.``Try Get Source Code with Api`` () =
-        let conf = ConnectionConfiguration("https://sonar.dev.trimble.tools", "23c21db195a3403f55ff0c0225c2a70b46b1f79b", "", 7.3)
-
-        let url1 = "/api/sources/lines?uuid=id&from=1&to=500"
-        let url2 = "/api/sources/lines?uuid=id&from=501&to=1000"
-
-        
-        let resource = new Resource( Key = "Trimble.TeklaOnline:TuaTrimbleConnect2")
-        let jsonHttp = new JsonSonarConnector()
-        let connector = jsonHttp :> IHttpSonarConnector
-        let service = SonarService(connector) :> ISonarRestService
-        let data = service.GetCoverageReportOnNewCodeOnLeak(conf, resource, null) 
-        Assert.That("1", Is.EqualTo("1"))
-
-
-    [<Test>]
     member test.``Get Source For Resource Resource`` () =
-        let conf = ConnectionConfiguration("https://sonar.dev.trimble.tools", "admin", "admin", 6.2)
+        let conf = ConnectionConfiguration("https://server", "admin", "admin", 6.2)
 
         let url1 = "/api/sources/lines?uuid=id&from=1&to=500"
         let url2 = "/api/sources/lines?uuid=id&from=501&to=1000"
