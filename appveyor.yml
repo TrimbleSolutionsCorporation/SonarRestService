@@ -4,7 +4,7 @@ before_build:
 - nuget restore
 
 build:
-  project: SonarRestService.sln
+  project: SonarRestServiceApi.sln
   verbosity: minimal
         
 artifacts:
