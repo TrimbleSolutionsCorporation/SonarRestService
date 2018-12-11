@@ -2,6 +2,7 @@ SonarRestService
 ====================
 
 [![Build status](https://ci.appveyor.com/api/projects/status/3c23a8q5kh8v3sw7?svg=true)](https://ci.appveyor.com/project/jorgecosta/sonarrestservice)
+[![DepShield Badge](https://depshield.sonatype.org/badges/TrimbleSolutionsCorporation/SonarRestService/depshield.svg)](https://depshield.github.io)
 
 This is a .net library to talk with SonarQube.
 
