@@ -1083,7 +1083,7 @@ type SonarService(httpconnector : IHttpSonarConnector) =
             } |> Async.StartAsTask
 
         member this.GetUserList(newConf : ISonarConfiguration) =
-            let url = "/api/users/search?ps=1000"           
+            let url = "/api/users/search?ps=500"           
             try
                 let responsecontent = httpconnector.HttpSonarGetRequest(newConf, url)
                 getUserListFromXmlResponse(responsecontent)

@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFrameworks>netcoreapp2.1;net452</TargetFrameworks>
+    <TargetFrameworks>net472</TargetFrameworks>
     <OutputPath>..\BuildDrop\Test</OutputPath>
   </PropertyGroup>
 
@@ -108,8 +108,12 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\SonarRestServiceImpl\UnSigned\SonarRestServiceImpl.fsproj" />
-    <ProjectReference Include="..\SonarRestService\SonarRestService.csproj" />
+    <ProjectReference Include="..\SonarRestApiImpl\SonarRestApiImpl.fsproj" />
+    <ProjectReference Include="..\SonarRestApi\SonarRestApi.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Update="FSharp.Core" Version="4.5.2" />
   </ItemGroup>
 
 </Project>
