@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <Version>1.0.2</Version>
+    <Version>1.1.1</Version>
     <TargetFrameworks>netstandard2.0;net472</TargetFrameworks>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <SignAssembly>true</SignAssembly>
@@ -9,6 +9,8 @@
     <OutputPath>..\BuildDrop\</OutputPath>
     <Authors>Jorge Costa</Authors>
     <Company>Trimble Solutions Corporation</Company>
+    <AssemblyVersion>1.0.0.0</AssemblyVersion>
+    <FileVersion>1.0.0.0</FileVersion>
   </PropertyGroup>
 
   <ItemGroup>
@@ -24,6 +26,7 @@
     <Compile Include="IssuesService.fs" />
     <Compile Include="MeasuresService.fs" />
     <Compile Include="SettingsService.fs" />
+    <Compile Include="UsersService.fs" />
     <Compile Include="SonarRestService.fs" />
   </ItemGroup>
 

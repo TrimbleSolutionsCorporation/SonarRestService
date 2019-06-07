@@ -35,7 +35,7 @@ let IgnoreAllFile2(conf : ISonarConfiguration, projectIn : Resource, file : stri
 
     let uploadProperty(currentproject : Resource) =
         // let get properties for project
-        let properties = service.GetProperties(conf, currentproject)
+        let properties = service.GetSettings(conf, currentproject)
 
         let getPropertiesForUpload =                                 
             let elem = properties |> Seq.tryFind (fun c -> c.Key.Equals("sonar.issue.ignore.allfile"))
@@ -82,11 +82,11 @@ let SetSetting(newConf : ISonarConfiguration, setting: Setting, project : Resour
             |> Seq.iter (fun elem -> options.Add(("fieldValues", GetValuesOfField(elem.Values))) )
 
     if project = null then
-        options.Add(("key", setting.key))
+        options.Add(("key", setting.Key))
         setValuesOption
     else
         options.Add(("component", project.Key))
-        options.Add(("key", setting.key))
+        options.Add(("key", setting.Key))
         setValuesOption
 
     let response = httpconnector.HttpSonarPostRequestDic(newConf, url, options)
@@ -113,7 +113,7 @@ let GetSettings(newConf : ISonarConfiguration, project : Resource, httpconnector
             fieldValue.JsonValue.Properties |> Seq.iter (fun (key,data) -> valueData.Values.Add(key, data.AsString()))
             setting.FieldValues.Add(valueData)
 
-        setting.key <- i.Key
+        setting.Key <- i.Key
         if i.Inherited.IsSome then
             setting.Inherited <- i.Inherited.Value
 
@@ -163,7 +163,7 @@ let GetExclusions(conf : ISonarConfiguration, projectIn : Resource, service : IS
 
     let uploadProperty(currentproject : Resource) =
 
-        let properties = service.GetProperties(conf, currentproject)
+        let properties = service.GetSettings(conf, currentproject)
 
         // upload new epochs
         let AddExclusionToList(ruleKey : string, fileKey : string) =
@@ -228,7 +228,7 @@ let IgnoreRuleOnFile(conf : ISonarConfiguration,
 
     let uploadProperty(currentproject : Resource) =
 
-        let properties = service.GetProperties(conf, currentproject)
+        let properties = service.GetSettings(conf, currentproject)
 
         let getPropertiesForUpload =                                 
             let elem = properties |> Seq.tryFind (fun c -> c.Key.Equals("sonar.issue.ignore.multicriteria"))

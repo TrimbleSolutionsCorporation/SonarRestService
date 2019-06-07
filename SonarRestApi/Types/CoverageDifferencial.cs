@@ -44,5 +44,15 @@
         /// The new coverage.
         /// </value>
         public decimal NewCoverage { get; set; }
-    }
+
+		/// <summary>
+		/// new lines to cover
+		/// </summary>
+		public decimal NewLinesToCover { get; set; }
+
+		/// <summary>
+		/// new conditions to cover
+		/// </summary>
+		public decimal NewConditionsToCover { get; set; }
+	}
 }

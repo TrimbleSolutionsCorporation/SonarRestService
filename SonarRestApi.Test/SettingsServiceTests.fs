@@ -43,11 +43,11 @@ type SettingsServiceTest() =
 
         let mockHttpReq =
             Mock<IHttpSonarConnector>()
-                .Setup(fun x -> <@ x.HttpSonarPostRequest(any(), any(), any()) @>).Returns(mockRestResponse)
+                .Setup(fun x -> <@ x.HttpSonarPostRequestDic(any(), any(), any()) @>).Returns(mockRestResponse)
                 .Create()
 
         let setting = new Setting()
-        setting.key <- "sonar.python.xunit.skipDetails"
+        setting.Key <- "sonar.python.xunit.skipDetails"
         setting.Value <- "true"
         let service = SonarService(mockHttpReq)
         let reply = (service :> ISonarRestService).SetSetting(conf, setting, new Resource( Key = "Trimble.Connect.Desktop:feature_test-sonar-6.3"))
@@ -64,11 +64,11 @@ type SettingsServiceTest() =
 
         let mockHttpReq =
             Mock<IHttpSonarConnector>()
-                .Setup(fun x -> <@ x.HttpSonarPostRequest(any(), any(), any()) @>).Returns(mockRestResponse)
+                .Setup(fun x -> <@ x.HttpSonarPostRequestDic(any(), any(), any()) @>).Returns(mockRestResponse)
                 .Create()
 
         let setting = new Setting()
-        setting.key <- "sonar.cpd.exclusions"
+        setting.Key <- "sonar.cpd.exclusions"
         setting.Values.Add("**/*.csproj")
         setting.Values.Add("**/*.vcxproj")
         setting.Values.Add("**/*.fsproj")
@@ -88,46 +88,22 @@ type SettingsServiceTest() =
 
         let mockHttpReq =
             Mock<IHttpSonarConnector>()
-                .Setup(fun x -> <@ x.HttpSonarPostRequest(any(), any(), any()) @>).Returns(mockRestResponse)
+                .Setup(fun x -> <@ x.HttpSonarPostRequestDic(any(), any(), any()) @>).Returns(mockRestResponse)
                 .Create()
 
         let setting = new Setting()
-        setting.key <- "sonar.issue.enforce.multicriteria"
+        setting.Key <- "sonar.issue.enforce.multicriteria"
         let fieldValue = new FieldValue()
         fieldValue.Values.Add("resourceKey", "**/test/*.cpp")
         fieldValue.Values.Add("ruleKey", "cxx:MethodName1")
         setting.FieldValues.Add(fieldValue)
-        let fieldValue = new FieldValue()
-        fieldValue.Values.Add("resourceKey", "**/test/*.cpp")
-        fieldValue.Values.Add("ruleKey", "cxx:ClassName1")
-        setting.FieldValues.Add(fieldValue)
+        let fieldValue2 = new FieldValue()
+        fieldValue2.Values.Add("resourceKey", "**/test/*.cpp")
+        fieldValue2.Values.Add("ruleKey", "cxx:ClassName1")
+        setting.FieldValues.Add(fieldValue2)
         let service = SonarService(mockHttpReq)
         let reply = (service :> ISonarRestService).SetSetting(conf, setting, new Resource( Key = "Trimble.Connect.Desktop:feature_test-sonar-6.3"))
         Assert.That(reply, Is.EqualTo(""))
-
-
-    [<Test>]
-    member test.``Get Properties per Resource`` () =
-        let conf = ConnectionConfiguration("http://localhost:9000", "admin", "admin", 5.3)
-        let mockHttpReq =
-            Mock<IHttpSonarConnector>()
-                .Setup(fun x -> <@ x.HttpSonarGetRequest(any(), any()) @>).Returns(File.ReadAllText(assemblyRunningPath + "/testdata/PropertiesResponse.txt"))
-                .Create()
-
-        let service = SonarService(mockHttpReq)
-        Assert.That((service :> ISonarRestService).GetProperties(conf, new Resource( Key = "Tekla.Tools.RoslynRunner")).Count, Is.EqualTo(66))
-
-
-    [<Test>]
-    member test.``Get All Properties`` () =
-        let conf = ConnectionConfiguration("http://localhost:9000", "admin", "admin", 5.3)
-        let mockHttpReq =
-            Mock<IHttpSonarConnector>()
-                .Setup(fun x -> <@ x.HttpSonarGetRequest(any(), any()) @>).Returns(File.ReadAllText(assemblyRunningPath + "/testdata/PropertiesResponse.txt"))
-                .Create()
-
-        let service = SonarService(mockHttpReq)
-        Assert.That((service :> ISonarRestService).GetProperties(conf).Count, Is.EqualTo(66))
 
     [<Test>]
     member test.``Update a property`` () =

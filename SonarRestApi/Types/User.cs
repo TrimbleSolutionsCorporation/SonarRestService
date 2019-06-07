@@ -14,6 +14,7 @@
 namespace SonarRestService.Types
 {
     using System;
+    using System.Collections.Generic;
 
     /// <summary>
     /// The user.
@@ -26,7 +27,8 @@ namespace SonarRestService.Types
         /// </summary>
         public User()
         {
-        }
+			this.AddionalEmails = new List<string>();
+		}
 
         /// <summary>
         /// Initializes a new instance of the <see cref="User"/> class.
@@ -43,12 +45,14 @@ namespace SonarRestService.Types
         /// <param name="email">
         /// The email.
         /// </param>
-        public User(string login, string name, bool active, string email)
+        public User(string login, string name, bool active, string email, string team = "")
         {
             this.Login = login;
             this.Name = name;
             this.Active = active;
             this.Email = email;
+			this.Team = team;
+			this.AddionalEmails = new List<string>();
         }
 
         /// <summary>
@@ -71,12 +75,22 @@ namespace SonarRestService.Types
         /// </summary>
         public string Email { get; set; }
 
-        /// <summary>
-        /// Gets or sets a value indicating whether this <see cref="User"/> is selected.
-        /// </summary>
-        /// <value>
-        ///   <c>true</c> if selected; otherwise, <c>false</c>.
-        /// </value>
-        public bool Selected { get; set; }
+		/// <summary>
+		/// Team
+		/// </summary>
+		public string Team { get; set; }
+
+		/// <summary>
+		/// Gets or sets a value indicating whether this <see cref="User"/> is selected.
+		/// </summary>
+		/// <value>
+		///   <c>true</c> if selected; otherwise, <c>false</c>.
+		/// </value>
+		public bool Selected { get; set; }
+
+		/// <summary>
+		/// Addional emails alias if they exist
+		/// </summary>
+		public List<string> AddionalEmails { get; set; }
     }
 }

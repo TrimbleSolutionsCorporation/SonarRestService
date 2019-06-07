@@ -44,29 +44,6 @@ type SonarService(httpconnector : IHttpSonarConnector) =
         else
             "&comment=" + HttpUtility.UrlEncode(comment)
 
-    let getUserListFromXmlResponse(responsecontent : string) =
-        let data = JsonUsers.Parse(responsecontent) 
-
-        let userList = new System.Collections.Generic.List<User>()
-        for user in data.Users do
-            let newUser = new User()
-
-            if not(obj.ReferenceEquals(user.Email, null)) then
-                newUser.Email <- user.Email.Value
-            else
-                newUser.Email <- ""
-
-            match user.Name with
-            | None -> newUser.Name <- ""
-            | Some c -> newUser.Name <- c
-
-            newUser.Active <- user.Active
-            newUser.Login <- user.Login
-
-            userList.Add(newUser)
-
-        userList
-
     let getProjectResourcesFromResponseContent(responsecontent : string) = 
         let resources = JsonResourceWithMetrics.Parse(responsecontent)
         let resourcelist = System.Collections.Generic.List<Resource>()
@@ -573,21 +550,48 @@ type SonarService(httpconnector : IHttpSonarConnector) =
 
     interface ISonarRestService with
         // ================================
+        // User Services
+        // ================================
+        member this.GetUserList(newConf : ISonarConfiguration) =
+            async {
+                return UsersService.GetUserList(newConf, httpconnector)
+            } |> Async.StartAsTask
+    
+        member this.GetTeams(users : System.Collections.Generic.IEnumerable<User>, teamsFile:string) =
+            async {
+                return UsersService.GetTeams(users, teamsFile)
+            } |> Async.StartAsTask
+
+        member this.AuthenticateUser(newConf : ISonarConfiguration) =
+            async {
+                return UsersService.AuthenticateUser(newConf, httpconnector)
+            } |> Async.StartAsTask
+
+        // ================================
         // Project Analysis Service Calls
         // ================================
-        member this.CreateVersion(conf: ISonarConfiguration, project: Resource, version: string, date : DateTime) =
-            let id, date, error = AnalysisService.GetAnalysisId(conf, project, date, httpconnector)
-            if id <> null then
-                AnalysisService.CreateVersion(conf, id, version, httpconnector)
-            else
-                error
+        member this.CreateVersion(conf: ISonarConfiguration, project: Resource, version: string, date : DateTime, toke:CancellationToken, logger:IRestLogger) =
+            async {
+                let id, date, error = AnalysisService.GetAnalysisId(conf, project, date, httpconnector)
+                if id <> null then
+                    return AnalysisService.CreateVersion(conf, id, version, httpconnector)
+                else
+                    return error
+            } |> Async.StartAsTask
 
-        member this.GetCoverageReportOnNewCodeOnLeak(conf: ISonarConfiguration, project: Resource, logger:IRestLogger) =
-            DifferencialService.GetCoverageReportOnNewCodeOnLeak(conf, project, httpconnector, logger)
 
-        member this.GetCoverageReport(conf: ISonarConfiguration, project: Resource) =
-            DifferencialService.GetCoverageReport(conf, project, httpconnector)
 
+        member this.GetCoverageReportOnNewCodeOnLeak(conf: ISonarConfiguration, project: Resource, token:CancellationToken, logger:IRestLogger) =
+            async {
+                return DifferencialService.GetCoverageReportOnNewCodeOnLeak(conf, project, httpconnector, token, logger)
+            } |> Async.StartAsTask
+            
+
+        member this.GetCoverageReport(conf: ISonarConfiguration, project: Resource, token:CancellationToken, logger:IRestLogger) =
+            async {
+                return DifferencialService.GetCoverageReport(conf, project, httpconnector)
+            } |> Async.StartAsTask
+           
         // ======================
         // Settings Service Calls
         // ======================
@@ -609,35 +613,33 @@ type SonarService(httpconnector : IHttpSonarConnector) =
         member this.GetSettings(newConf : ISonarConfiguration, project : Resource) =
             SettingsService.GetSettings(newConf, project, httpconnector).AsEnumerable()
 
-        member this.GetProperties(newConf : ISonarConfiguration, project : Resource) =
-            SettingsService.GetProperties(newConf, project, httpconnector)
-
-        member this.GetProperties(newConf : ISonarConfiguration) =
-            SettingsService.GetProperties(newConf, null, httpconnector)
-
         member this.CancelRequest() =
             cancelRequest <- true
 
-        member this.IndexServerResources(conf : ISonarConfiguration, project : Resource) = 
-            
-            if conf.SonarVersion < 6.3 then
-                let url = "/api/resources/index?qualifiers=DIR,TRK,BRC&depth=-1&resource=" + project.Key
-                getResourcesFromResponseContent(httpconnector.HttpSonarGetRequest(conf, url))
-            else
-                ComponentService.IndexServerResources(conf, project, httpconnector)
+        member this.IndexServerResources(conf : ISonarConfiguration, project : Resource, toke:CancellationToken, logger:IRestLogger) = 
+            async {
+                if conf.SonarVersion < 6.3 then
+                    let url = "/api/resources/index?qualifiers=DIR,TRK,BRC&depth=-1&resource=" + project.Key
+                    return getResourcesFromResponseContent(httpconnector.HttpSonarGetRequest(conf, url))
+                else
+                    return ComponentService.IndexServerResources(conf, project, httpconnector)
+            } |> Async.StartAsTask
 
-        member this.GetBlameLine(conf:ISonarConfiguration, key:string, line:int) = 
-            let url = "/api/sources/scm?key=" + key.Trim() + "&commits_by_line=true&from=" + line.ToString() + "&to=" + line.ToString()
-            let reply = httpconnector.HttpSonarGetRequest(conf, url)
-            let data = ScmAnswer.Parse(reply)
-            let blame = new BlameLine()
-            let scmLine = data.Scm.[0]
-            blame.Author <- scmLine.Strings.[1]
-            blame.Date <- scmLine.DateTime.DateTime
-            blame.Email <- scmLine.Strings.[1]
-            blame.Line <- scmLine.Number
+        member this.GetBlameLine(conf:ISonarConfiguration, key:string, line:int, toke:CancellationToken, logger:IRestLogger) = 
+            async {
+                let url = "/api/sources/scm?key=" + key.Trim() + "&commits_by_line=true&from=" + line.ToString() + "&to=" + line.ToString()
+                let reply = httpconnector.HttpSonarGetRequest(conf, url)
+                let data = ScmAnswer.Parse(reply)
+                let blame = new BlameLine()
+                let scmLine = data.Scm.[0]
+                blame.Author <- scmLine.Strings.[1]
+                blame.Date <- scmLine.DateTime.DateTime
+                blame.Email <- scmLine.Strings.[1]
+                blame.Line <- scmLine.Number
 
-            blame
+                return blame
+            } |> Async.StartAsTask
+
 
         member this.ApplyPermissionTemplateToProject(conf:ISonarConfiguration, key:string, name:string) =
             let url = "/api/permissions/search_templates?q=" + name
@@ -1082,27 +1084,9 @@ type SonarService(httpconnector : IHttpSonarConnector) =
                 return IssuesService.GetAvailableTags(newConf, httpconnector, token, logger)
             } |> Async.StartAsTask
 
-        member this.GetUserList(newConf : ISonarConfiguration) =
-            let url = "/api/users/search?ps=500"           
-            try
-                let responsecontent = httpconnector.HttpSonarGetRequest(newConf, url)
-                getUserListFromXmlResponse(responsecontent)
-            with
-             | ex -> new System.Collections.Generic.List<User>()
-
-        member this.AuthenticateUser(newConf : ISonarConfiguration) =
-            let url = "/api/authentication/validate"
-
-            try
-                let responsecontent = httpconnector.HttpSonarGetRequest(newConf, url)
-                JsonValidateUser.Parse(responsecontent).Valid
-            with
-                | ex -> false
-
         member this.SearchComponent(conf : ISonarConfiguration, searchString : string, filterBranchs : bool, masterBranch : string) = 
             let url = "/api/components/search?qualifiers=DIR,TRK,PAC,CLA,BRC&q=" + searchString
             
-
             let getComponentFromResponse(data : string) = 
                 let resources = new System.Collections.Generic.List<Resource>()
                 let components = ComponentSearchAnswer.Parse(data)
@@ -1271,174 +1255,159 @@ type SonarService(httpconnector : IHttpSonarConnector) =
                 let url = "/api/measures/component?componentKey=" + resource + "&metricKeys=duplications_data";
                 GetDuplicationsFromContent(httpconnector.HttpSonarGetRequest(conf, url))
 
-        member this.CommentOnIssues(newConf : ISonarConfiguration, issues : System.Collections.IList, comment : string) =
-            let responseMap = new System.Collections.Generic.Dictionary<string, Net.HttpStatusCode>()
+        member this.CommentOnIssues(newConf : ISonarConfiguration, issues : System.Collections.Generic.IEnumerable<Issue>, comment : string, logger:IRestLogger, token:CancellationToken) =
+            async {
+                for issue in issues  do
+                    if not(token.IsCancellationRequested) then
+                        let mutable idstr = Convert.ToString(issue.Key)
+                        let parameters = Map.empty.Add("issue", idstr).Add("text", comment)
 
-            for issueobj in issues do
-                let issue = issueobj :?> Issue
-                let mutable idstr = Convert.ToString(issue.Key)
-                let parameters = Map.empty.Add("issue", idstr).Add("text", comment)
+                        let AddCommentFromResponse(issuesToCheck : System.Collections.Generic.List<Issue>) = 
+                            for commentNew in issuesToCheck.[0].Comments do
+                                let mutable found = false
+                                for issueExist in issue.Comments do
+                                    if issueExist.HtmlText = commentNew.HtmlText then
+                                        found <- true
 
-                let AddCommentFromResponse(issuesToCheck : System.Collections.Generic.List<Issue>) = 
-                    for commentNew in issuesToCheck.[0].Comments do
-                        let mutable found = false
-                        for issueExist in issue.Comments do
-                            if issueExist.HtmlText = commentNew.HtmlText then
-                                found <- true
+                                if not found then
+                                    issue.Comments.Add(commentNew)
 
-                        if not found then
-                            issue.Comments.Add(commentNew)
-
-                let mutable response = httpconnector.HttpSonarPostRequest(newConf, "/api/issues/add_comment", parameters)
-                if response.StatusCode <> Net.HttpStatusCode.OK then
-                    idstr <- Convert.ToString(issue.Id)
-                    if issue.Comments.Count > 0 then
-                        let parameters = Map.empty.Add("id", Convert.ToString(issue.Comments.[0].Id)).Add("comment", comment)
-                        response <- httpconnector.HttpSonarPutRequest(newConf, "/api/reviews/add_comment", parameters)
-                    else
-                        let url = "/api/reviews?violation_id=" + Convert.ToString(idstr) + "&status=OPEN" + GetComment(comment)
-                        response <- httpconnector.HttpSonarRequest(newConf, url, Method.POST)
-
-                try
-                    let comment = JSonComment.Parse(response.Content)
-                    let commentToAdd = new Comment()
-                    commentToAdd.CreatedAt <- comment.Comment.CreatedAt.DateTime
-                    commentToAdd.HtmlText <- comment.Comment.HtmlText
-                    commentToAdd.Key <- comment.Comment.Key
-                    commentToAdd.Login <- comment.Comment.Login
-                    issue.Comments.Add(commentToAdd)
-                with
-                    | ex -> AddCommentFromResponse(IssuesService.getReviewsFromString(response.Content))
-
-                try
-                    if not(responseMap.ContainsKey(idstr)) then
-                        responseMap.Add(idstr, response.StatusCode) |> ignore
-                    else
-                        responseMap.Add(idstr + "-dup", response.StatusCode) |> ignore
-                with
-                    | ex -> ()
-                ()
-
-            responseMap
-
-            
-        member this.MarkIssuesAsWontFix(newConf : ISonarConfiguration, issues : System.Collections.IList, comment : string) =
-            let responseMap = new System.Collections.Generic.Dictionary<string, Net.HttpStatusCode>()
-
-            for issueobj in issues do
-                let issue = issueobj :?> Issue
-                if issue.Status <> IssueStatus.RESOLVED then
-                    let mutable idstr = issue.Key.ToString()
-                    let mutable status = IssuesService.DoStateTransition(newConf, issue, IssueStatus.RESOLVED, "wontfix", httpconnector)
-                    if status = Net.HttpStatusCode.OK then
-                        if not(String.IsNullOrEmpty(comment)) then
-                            (this :> ISonarRestService).CommentOnIssues(newConf, issues, comment) |> ignore
-                    else
-                        if not(idstr.Equals("0")) then
+                        let mutable response = httpconnector.HttpSonarPostRequest(newConf, "/api/issues/add_comment", parameters)
+                        if response.StatusCode <> Net.HttpStatusCode.OK then
                             idstr <- Convert.ToString(issue.Id)
-                            let CheckReponse(response : IRestResponse)= 
-                                if response.StatusCode = Net.HttpStatusCode.OK then
-                                    let reviews = IssuesService.getReviewsFromString(response.Content)
-                                    issue.Id <- reviews.[0].Id
-                                    issue.Status <- reviews.[0].Status
-                                    issue.Resolution <- Resolution.WONTFIX
-                                    let newComment = new Comment()
-                                    newComment.CreatedAt <- DateTime.Now
-                                    newComment.HtmlText <- comment
-                                    newComment.Login <- newConf.Username
-                                    issue.Comments.Add(newComment)
-
                             if issue.Comments.Count > 0 then
-                                let parameters = Map.empty.Add("id", idstr).Add("resolution", "WONTFIX").Add("comment", comment)
-                                let response = httpconnector.HttpSonarPutRequest(newConf, "/api/reviews/resolve", parameters)
-                                status <- response.StatusCode
-                                CheckReponse(response)
+                                let parameters = Map.empty.Add("id", Convert.ToString(issue.Comments.[0].Id)).Add("comment", comment)
+                                response <- httpconnector.HttpSonarPutRequest(newConf, "/api/reviews/add_comment", parameters)
                             else
-                                let url = "/api/reviews?violation_id=" + Convert.ToString(idstr) + "&status=RESOLVED&resolution=WONTFIX" + GetComment(comment)
-                                let response = httpconnector.HttpSonarRequest(newConf, url, Method.POST)
-                                CheckReponse(response)
-                                status <- response.StatusCode
+                                let url = "/api/reviews?violation_id=" + Convert.ToString(idstr) + "&status=OPEN" + GetComment(comment)
+                                response <- httpconnector.HttpSonarRequest(newConf, url, Method.POST)
 
-                    responseMap.Add(idstr, status)
+                        try
+                            let comment = JSonComment.Parse(response.Content)
+                            let commentToAdd = new Comment()
+                            commentToAdd.CreatedAt <- comment.Comment.CreatedAt.DateTime
+                            commentToAdd.HtmlText <- comment.Comment.HtmlText
+                            commentToAdd.Key <- comment.Comment.Key
+                            commentToAdd.Login <- comment.Comment.Login
+                            issue.Comments.Add(commentToAdd)
+                        with
+                            | ex -> AddCommentFromResponse(IssuesService.getReviewsFromString(response.Content))
 
-            responseMap
+                return true
+            } |> Async.StartAsTask
+                       
+        member this.MarkIssuesAsWontFix(newConf : ISonarConfiguration, issues : System.Collections.Generic.IEnumerable<Issue>, comment : string, logger:IRestLogger, token:CancellationToken) =
+            async {
+                for issue in issues do
+                    if not(token.IsCancellationRequested) && issue.Status <> IssueStatus.RESOLVED then
+                        let mutable idstr = issue.Key.ToString()
+                        let mutable status = IssuesService.DoStateTransition(newConf, issue, IssueStatus.RESOLVED, "wontfix", httpconnector)
+                        if status = Net.HttpStatusCode.OK then
+                            if not(String.IsNullOrEmpty(comment)) then
+                                (this :> ISonarRestService).CommentOnIssues(newConf, issues, comment, logger, token)
+                                |> Async.AwaitTask
+                                |> ignore
+                        else
+                            if not(idstr.Equals("0")) then
+                                idstr <- Convert.ToString(issue.Id)
+                                let CheckReponse(response : IRestResponse)= 
+                                    if response.StatusCode = Net.HttpStatusCode.OK then
+                                        let reviews = IssuesService.getReviewsFromString(response.Content)
+                                        issue.Id <- reviews.[0].Id
+                                        issue.Status <- reviews.[0].Status
+                                        issue.Resolution <- Resolution.WONTFIX
+                                        let newComment = new Comment()
+                                        newComment.CreatedAt <- DateTime.Now
+                                        newComment.HtmlText <- comment
+                                        newComment.Login <- newConf.Username
+                                        issue.Comments.Add(newComment)
 
-
-        member this.MarkIssuesAsFalsePositive(newConf : ISonarConfiguration, issues : System.Collections.IList, comment : string) =
-            let responseMap = new System.Collections.Generic.Dictionary<string, Net.HttpStatusCode>()
-
-            for issueobj in issues do
-                let issue = issueobj :?> Issue
-                if issue.Status <> IssueStatus.RESOLVED then
-                    let mutable idstr = issue.Key.ToString()
-                    let mutable status = IssuesService.DoStateTransition(newConf, issue, IssueStatus.RESOLVED, "falsepositive", httpconnector)
-                    if status = Net.HttpStatusCode.OK then
-                        if not(String.IsNullOrEmpty(comment)) then
-                            (this :> ISonarRestService).CommentOnIssues(newConf, issues, comment) |> ignore
-                    else
-                        if not(idstr.Equals("0")) then
-                            idstr <- Convert.ToString(issue.Id)
-                            let CheckReponse(response : IRestResponse)= 
-                                if response.StatusCode = Net.HttpStatusCode.OK then
-                                    let reviews = IssuesService.getReviewsFromString(response.Content)
-                                    issue.Id <- reviews.[0].Id
-                                    issue.Status <- reviews.[0].Status
-                                    issue.Resolution <- Resolution.FALSE_POSITIVE
-                                    let newComment = new Comment()
-                                    newComment.CreatedAt <- DateTime.Now
-                                    newComment.HtmlText <- comment
-                                    newComment.Login <- newConf.Username
-                                    issue.Comments.Add(newComment)
-
-                            if issue.Comments.Count > 0 then
-                                let parameters = Map.empty.Add("id", idstr).Add("resolution", "FALSE-POSITIVE").Add("comment", comment)
-                                let response = httpconnector.HttpSonarPutRequest(newConf, "/api/reviews/resolve", parameters)
-                                status <- response.StatusCode
-                                CheckReponse(response)
-                            else
-                                let url = "/api/reviews?violation_id=" + Convert.ToString(idstr) + "&status=RESOLVED&resolution=FALSE-POSITIVE" + GetComment(comment)
-                                let response = httpconnector.HttpSonarRequest(newConf, url, Method.POST)
-                                CheckReponse(response)
-                                status <- response.StatusCode
-
-                    responseMap.Add(idstr, status)
-
-            responseMap
-
-        member this.PlanIssues(newConf : ISonarConfiguration, issues : System.Collections.IList, planid : string) =
-            let responseMap = new System.Collections.Generic.Dictionary<string, Net.HttpStatusCode>()
-            for issueobj in issues do
-                let issue = issueobj :?> Issue
-                let parameters = Map.empty.Add("issue", issue.Key.ToString()).Add("plan", planid)
-                let data = httpconnector.HttpSonarPostRequest(newConf, "/api/issues/plan", parameters)
-                responseMap.Add(issue.Key.ToString(), data.StatusCode)
-
-            responseMap
+                                if issue.Comments.Count > 0 then
+                                    let parameters = Map.empty.Add("id", idstr).Add("resolution", "WONTFIX").Add("comment", comment)
+                                    let response = httpconnector.HttpSonarPutRequest(newConf, "/api/reviews/resolve", parameters)
+                                    status <- response.StatusCode
+                                    CheckReponse(response)
+                                else
+                                    let url = "/api/reviews?violation_id=" + Convert.ToString(idstr) + "&status=RESOLVED&resolution=WONTFIX" + GetComment(comment)
+                                    let response = httpconnector.HttpSonarRequest(newConf, url, Method.POST)
+                                    CheckReponse(response)
+                                    status <- response.StatusCode
+                return true
+            } |> Async.StartAsTask
 
 
-        member this.UnPlanIssues(newConf : ISonarConfiguration, issues : System.Collections.IList) =
-            let responseMap = new System.Collections.Generic.Dictionary<string, Net.HttpStatusCode>()
-            for issueobj in issues do
-                let issue = issueobj :?> Issue
-                let parameters = Map.empty.Add("issue", issue.Key.ToString())
-                let data = httpconnector.HttpSonarPostRequest(newConf, "/api/issues/plan", parameters)
-                responseMap.Add(issue.Key.ToString(), data.StatusCode)
+        member this.MarkIssuesAsFalsePositive(newConf : ISonarConfiguration, issues : System.Collections.Generic.IEnumerable<Issue>, comment : string, logger:IRestLogger, token:CancellationToken) =
+            async  {
+                for issue in issues do
+                    if not(token.IsCancellationRequested) && issue.Status <> IssueStatus.RESOLVED then
+                        let mutable idstr = issue.Key.ToString()
+                        let mutable status = IssuesService.DoStateTransition(newConf, issue, IssueStatus.RESOLVED, "falsepositive", httpconnector)
+                        if status = Net.HttpStatusCode.OK then
+                            if not(String.IsNullOrEmpty(comment)) then
+                                (this :> ISonarRestService).CommentOnIssues(newConf, issues, comment, logger, token)
+                                |> Async.AwaitTask
+                                |> ignore
+                        else
+                            if not(idstr.Equals("0")) then
+                                idstr <- Convert.ToString(issue.Id)
+                                let CheckReponse(response : IRestResponse)= 
+                                    if response.StatusCode = Net.HttpStatusCode.OK then
+                                        let reviews = IssuesService.getReviewsFromString(response.Content)
+                                        issue.Id <- reviews.[0].Id
+                                        issue.Status <- reviews.[0].Status
+                                        issue.Resolution <- Resolution.FALSE_POSITIVE
+                                        let newComment = new Comment()
+                                        newComment.CreatedAt <- DateTime.Now
+                                        newComment.HtmlText <- comment
+                                        newComment.Login <- newConf.Username
+                                        issue.Comments.Add(newComment)
 
-            responseMap
+                                if issue.Comments.Count > 0 then
+                                    let parameters = Map.empty.Add("id", idstr).Add("resolution", "FALSE-POSITIVE").Add("comment", comment)
+                                    let response = httpconnector.HttpSonarPutRequest(newConf, "/api/reviews/resolve", parameters)
+                                    status <- response.StatusCode
+                                    CheckReponse(response)
+                                else
+                                    let url = "/api/reviews?violation_id=" + Convert.ToString(idstr) + "&status=RESOLVED&resolution=FALSE-POSITIVE" + GetComment(comment)
+                                    let response = httpconnector.HttpSonarRequest(newConf, url, Method.POST)
+                                    CheckReponse(response)
+                                    status <- response.StatusCode
+                return true
+            } |> Async.StartAsTask
+
+        member this.PlanIssues(newConf : ISonarConfiguration, issues : System.Collections.Generic.IEnumerable<Issue>, planid : string, logger:IRestLogger, token:CancellationToken) =
+            async  {
+                for issue in issues do
+                    if not(token.IsCancellationRequested) then
+                        let parameters = Map.empty.Add("issue", issue.Key.ToString()).Add("plan", planid)
+                        let data = httpconnector.HttpSonarPostRequest(newConf, "/api/issues/plan", parameters)
+                        logger.ReportMessage(sprintf "Issue Planned: %s: %A" (issue.Key.ToString()) data.StatusCode)
+                return true
+            } |> Async.StartAsTask
+
+
+        member this.UnPlanIssues(newConf : ISonarConfiguration, issues : System.Collections.Generic.IEnumerable<Issue>, logger:IRestLogger, token:CancellationToken) =
+            async  {
+                for issue in issues do
+                    if not(token.IsCancellationRequested) then
+                        let parameters = Map.empty.Add("issue", issue.Key.ToString())
+                        let data = httpconnector.HttpSonarPostRequest(newConf, "/api/issues/plan", parameters)
+                        logger.ReportMessage(sprintf "Issue Planned: %s: %A" (issue.Key.ToString()) data.StatusCode)
+                return true
+            } |> Async.StartAsTask
                         
-        member this.ResolveIssues(newConf : ISonarConfiguration, issues : System.Collections.IList, comment : string) =
-            let responseMap = new System.Collections.Generic.Dictionary<string, Net.HttpStatusCode>()
-
-            for issueobj in issues do
-                let issue = issueobj :?> Issue
-                if issue.Status <> IssueStatus.RESOLVED then
+        member this.ResolveIssues(newConf : ISonarConfiguration, issues : System.Collections.Generic.IEnumerable<Issue>, comment : string, logger:IRestLogger, token:CancellationToken) =
+            async  {
+                let ProcessIssue(issue:Issue) =
                     let mutable idstr = issue.Key.ToString()
                     let mutable status = Net.HttpStatusCode.OK
                     status <- IssuesService.DoStateTransition(newConf, issue, IssueStatus.RESOLVED, "resolve", httpconnector)
 
                     if status = Net.HttpStatusCode.OK then
                         if not(String.IsNullOrEmpty(comment)) then
-                            (this :> ISonarRestService).CommentOnIssues(newConf, issues, comment) |> ignore
+                            (this :> ISonarRestService).CommentOnIssues(newConf, issues, comment, logger, token)
+                            |> Async.AwaitTask
+                            |> ignore
                     else
                         idstr <- Convert.ToString(issue.Id)
                         let CheckReponse(response : IRestResponse)= 
@@ -1464,80 +1433,96 @@ type SonarService(httpconnector : IHttpSonarConnector) =
                             CheckReponse(response)
                             status <- response.StatusCode
 
-                    responseMap.Add(idstr, status)
+                        logger.ReportMessage(sprintf "Issue Resolved Status: %s: %A" (issue.Key.ToString()) status)
+                issues
+                |> Seq.iter (fun elem -> if not(token.IsCancellationRequested) && elem.Status <> IssueStatus.RESOLVED then ProcessIssue(elem))
 
-            responseMap
+                return true
+            } |> Async.StartAsTask
 
-        member this.ReOpenIssues(newConf : ISonarConfiguration, issues : System.Collections.Generic.List<Issue>, comment : string) =
-            let responseMap = new System.Collections.Generic.Dictionary<string, Net.HttpStatusCode>()
-            for issue in issues do
-                if issue.Status <> IssueStatus.REOPENED || issue.Status <> IssueStatus.OPEN then
-                    let mutable idstr = issue.Key.ToString()
-                    let mutable status = Net.HttpStatusCode.OK
-                    status <- IssuesService.DoStateTransition(newConf, issue, IssueStatus.REOPENED, "reopen", httpconnector)
-                    if status = Net.HttpStatusCode.OK then
-                        if not(String.IsNullOrEmpty(comment)) then
-                            (this :> ISonarRestService).CommentOnIssues(newConf, issues, comment) |> ignore
-                    else
-                        idstr <- Convert.ToString(issue.Id)
-                        let CheckReponse(response : IRestResponse)= 
-                            if response.StatusCode = Net.HttpStatusCode.OK then
-                                let reviews = IssuesService.getReviewsFromString(response.Content)
-                                issue.Id <- reviews.[0].Id
-                                issue.Status <- reviews.[0].Status
-                                let newComment = new Comment()
-                                newComment.CreatedAt <- DateTime.Now
-                                newComment.HtmlText <- comment
-                                newComment.Login <- newConf.Username
-                                issue.Comments.Add(newComment)
+        member this.ReOpenIssues(newConf : ISonarConfiguration, issues : System.Collections.Generic.List<Issue>, comment : string, logger:IRestLogger, token:CancellationToken) =
+            async {
+                for issue in issues do
+                    if not(token.IsCancellationRequested) && (issue.Status <> IssueStatus.REOPENED || issue.Status <> IssueStatus.OPEN) then
+                        let mutable idstr = issue.Key.ToString()
+                        let mutable status = Net.HttpStatusCode.OK
+                        status <- IssuesService.DoStateTransition(newConf, issue, IssueStatus.REOPENED, "reopen", httpconnector)
+                        if status = Net.HttpStatusCode.OK then
+                            if not(String.IsNullOrEmpty(comment)) then
+                                (this :> ISonarRestService).CommentOnIssues(newConf, issues, comment, logger, token)
+                                |> Async.AwaitTask
+                                |> ignore
+                        else
+                            idstr <- Convert.ToString(issue.Id)
+                            let CheckReponse(response : IRestResponse)= 
+                                if response.StatusCode = Net.HttpStatusCode.OK then
+                                    let reviews = IssuesService.getReviewsFromString(response.Content)
+                                    issue.Id <- reviews.[0].Id
+                                    issue.Status <- reviews.[0].Status
+                                    let newComment = new Comment()
+                                    newComment.CreatedAt <- DateTime.Now
+                                    newComment.HtmlText <- comment
+                                    newComment.Login <- newConf.Username
+                                    issue.Comments.Add(newComment)
 
-                        let parameters = Map.empty.Add("id", idstr).Add("comment", comment)
-                        let response = httpconnector.HttpSonarPutRequest(newConf, "/api/reviews/reopen", parameters)
-                        CheckReponse(response)
-                        status <- response.StatusCode
+                            let parameters = Map.empty.Add("id", idstr).Add("comment", comment)
+                            let response = httpconnector.HttpSonarPutRequest(newConf, "/api/reviews/reopen", parameters)
+                            CheckReponse(response)
+                            status <- response.StatusCode
                         
-                    responseMap.Add(idstr, status)
-            responseMap
+                return true
+            } |> Async.StartAsTask
 
-        member this.UnConfirmIssues(newConf : ISonarConfiguration, issues : System.Collections.IList, comment : string) =
-            let responseMap = new System.Collections.Generic.Dictionary<string, Net.HttpStatusCode>()
-            for issueobj in issues do
-                let issue = issueobj :?> Issue
-                responseMap.Add(issue.Key.ToString(), IssuesService.DoStateTransition(newConf, issue, IssueStatus.REOPENED, "unconfirm", httpconnector))
-            if not(String.IsNullOrEmpty(comment)) then
-                (this :> ISonarRestService).CommentOnIssues(newConf, issues, comment) |> ignore                                
-            responseMap
+        member this.UnConfirmIssues(newConf : ISonarConfiguration, issues : System.Collections.Generic.IEnumerable<Issue>, comment : string, logger:IRestLogger, token:CancellationToken) =
+            async {
+                for issue in issues do
+                    if not(token.IsCancellationRequested) then
+                        let status = IssuesService.DoStateTransition(newConf, issue, IssueStatus.REOPENED, "unconfirm", httpconnector)
+                        logger.ReportMessage(sprintf "Issue Unconfirmed Status: %s: %A" (issue.Key.ToString()) status)
 
-        member this.ConfirmIssues(newConf : ISonarConfiguration, issues : System.Collections.IList, comment : string) =
-            let responseMap = new System.Collections.Generic.Dictionary<string, Net.HttpStatusCode>()
-            for issueobj in issues do
-                let issue = issueobj :?> Issue
-                if issue.Status.Equals(IssueStatus.RESOLVED) then
-                    IssuesService.DoStateTransition(newConf, issue, IssueStatus.REOPENED, "reopen", httpconnector) |> ignore
+                if not(String.IsNullOrEmpty(comment)) then
+                    (this :> ISonarRestService).CommentOnIssues(newConf, issues, comment, logger, token)
+                    |> Async.AwaitTask
+                    |> ignore
+                return true
+            } |> Async.StartAsTask
 
-                responseMap.Add(issue.Key.ToString(), IssuesService.DoStateTransition(newConf, issue, IssueStatus.CONFIRMED, "confirm", httpconnector))                
 
-            if not(String.IsNullOrEmpty(comment)) then
-                (this :> ISonarRestService).CommentOnIssues(newConf, issues, comment) |> ignore
-            responseMap
+        member this.ConfirmIssues(newConf : ISonarConfiguration, issues : System.Collections.Generic.IEnumerable<Issue>, comment : string, logger:IRestLogger, token:CancellationToken) =
+            async {
+                for issue in issues do
+                    if not(token.IsCancellationRequested) && issue.Status.Equals(IssueStatus.RESOLVED) then
+                        let status = IssuesService.DoStateTransition(newConf, issue, IssueStatus.REOPENED, "reopen", httpconnector) |> ignore
+                        logger.ReportMessage(sprintf "Issue Confirm Status: %s: %A" (issue.Key.ToString()) status)
 
-        member this.AssignIssuesToUser(newConf : ISonarConfiguration, issues : System.Collections.Generic.List<Issue>, user : User, comment : string) =
-            let responseMap = new System.Collections.Generic.Dictionary<string, Net.HttpStatusCode>()
-            for issue in issues do
-                if not(String.IsNullOrEmpty(user.Login)) then
-                    let parameters = Map.empty.Add("issue", issue.Key.ToString()).Add("assignee", user.Login)
-                    let data = httpconnector.HttpSonarPostRequest(newConf, "/api/issues/assign", parameters)
-                    responseMap.Add(issue.Key.ToString(), data.StatusCode)
-                    if data.StatusCode = Net.HttpStatusCode.OK then
-                        issue.Assignee <- user.Login
-                else
-                    let parameters = Map.empty.Add("issue", issue.Key.ToString())
-                    let data = httpconnector.HttpSonarPostRequest(newConf, "/api/issues/assign", parameters)
-                    if data.StatusCode = Net.HttpStatusCode.OK then
-                        issue.Assignee <- ""
-                    responseMap.Add(issue.Key.ToString(), data.StatusCode)
+                if not(String.IsNullOrEmpty(comment)) then
+                    (this :> ISonarRestService).CommentOnIssues(newConf, issues, comment, logger, token)
+                    |> Async.AwaitTask
+                    |> ignore
                 
-            if not(String.IsNullOrEmpty(comment)) then
-                (this :> ISonarRestService).CommentOnIssues(newConf, issues, comment) |> ignore
+                return true
+            } |> Async.StartAsTask
 
-            responseMap
+        member this.AssignIssuesToUser(newConf : ISonarConfiguration, issues : System.Collections.Generic.IEnumerable<Issue>, user : User, comment : string, logger:IRestLogger, token:CancellationToken) =
+            async {
+                for issue in issues do
+                    if not(String.IsNullOrEmpty(user.Login)) then
+                        let parameters = Map.empty.Add("issue", issue.Key.ToString()).Add("assignee", user.Login)
+                        let data = httpconnector.HttpSonarPostRequest(newConf, "/api/issues/assign", parameters)
+                        logger.ReportMessage(sprintf "Assign Issue: %s: %A" (issue.Key.ToString()) data.StatusCode)
+                        if data.StatusCode = Net.HttpStatusCode.OK then
+                            issue.Assignee <- user.Login
+                    else
+                        let parameters = Map.empty.Add("issue", issue.Key.ToString())
+                        let data = httpconnector.HttpSonarPostRequest(newConf, "/api/issues/assign", parameters)
+                        if data.StatusCode = Net.HttpStatusCode.OK then
+                            issue.Assignee <- ""
+                        logger.ReportMessage(sprintf "Assign Issue: %s: %A" (issue.Key.ToString()) data.StatusCode)
+                
+                if not(String.IsNullOrEmpty(comment)) then
+                    (this :> ISonarRestService).CommentOnIssues(newConf, issues, comment, logger, token)
+                    |> Async.AwaitTask
+                    |> ignore
+
+                return true
+            } |> Async.StartAsTask

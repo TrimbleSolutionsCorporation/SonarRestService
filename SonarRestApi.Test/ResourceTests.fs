@@ -12,6 +12,8 @@ open System
 open RestSharp
 open System.Collections.ObjectModel
 open System.Reflection
+open System.Threading
+
 type ResourceTests() =
     let assemblyRunningPath = Directory.GetParent(Assembly.GetExecutingAssembly().Location).ToString()
     [<Test>]
@@ -96,8 +98,7 @@ type ResourceTests() =
         issueList.Add(new Issue(Id = 343, Comments = Comments))
 
         Assert.That(issueList.[0].Comments.Count, Is.EqualTo(1))
-        let status = (service :> ISonarRestService).CommentOnIssues(conf, issueList, "comment")
-        let data = status.Item("343")
+        let status = (service :> ISonarRestService).CommentOnIssues(conf, issueList, "comment", null, (new CancellationTokenSource()).Token).Result
         Assert.That(issueList.[0].Comments.Count, Is.EqualTo(2))
 
     [<Test>]
@@ -122,8 +123,7 @@ type ResourceTests() =
         issueList.Add(new Issue(Id = 343, Comments = Comments, Key = (new Guid()).ToString()))
 
         Assert.That(issueList.[0].Comments.Count, Is.EqualTo(1))
-        let status = (service :> ISonarRestService).CommentOnIssues(conf, issueList, "comment")
-        let data = status.Item((new Guid()).ToString())
+        let status = (service :> ISonarRestService).CommentOnIssues(conf, issueList, "comment", null, (new CancellationTokenSource()).Token).Result
         Assert.That(issueList.[0].Comments.Count, Is.EqualTo(2))
 
     [<Test>]
@@ -152,8 +152,7 @@ type ResourceTests() =
         issueList.Add(new Issue(Id = 343))
 
         Assert.That(issueList.[0].Comments.Count, Is.EqualTo(0))
-        let status = (service :> ISonarRestService).CommentOnIssues(conf, issueList, "comment")
-        let data = status.Item("343")
+        let status = (service :> ISonarRestService).CommentOnIssues(conf, issueList, "comment", null, (new CancellationTokenSource()).Token).Result
         Assert.That(issueList.[0].Comments.Count, Is.EqualTo(1))
 
     //[<Test>]

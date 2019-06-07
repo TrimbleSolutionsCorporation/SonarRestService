@@ -21,11 +21,11 @@ type AdministrationTests() =
 
         let mockHttpReq =
             Mock<IHttpSonarConnector>()
-                .Setup(fun x -> <@ x.HttpSonarGetRequest(any(), "/api/users/search?ps=1000") @>).Returns(File.ReadAllText(assemblyRunningPath + "/testdata/userList.txt"))
+                .Setup(fun x -> <@ x.HttpSonarGetRequest(any(), "/api/users/search?ps=500") @>).Returns(File.ReadAllText(assemblyRunningPath + "/testdata/userList.txt"))
                 .Create()
 
         let service = SonarService(mockHttpReq)
-        let userList = (service :> ISonarRestService).GetUserList(conf)
+        let userList = (service :> ISonarRestService).GetUserList(conf).Result
         Assert.That(userList.Count, Is.EqualTo(3))
 
     [<Test>]
@@ -38,7 +38,7 @@ type AdministrationTests() =
                 .Create()
 
         let service = SonarService(mockHttpReq)
-        let userList = (service :> ISonarRestService).GetUserList(conf)
+        let userList = (service :> ISonarRestService).GetUserList(conf).Result
         Assert.That(userList.Count, Is.EqualTo(0))
 
     [<Test>]
@@ -51,7 +51,7 @@ type AdministrationTests() =
                 .Create()
 
         let service = SonarService(mockHttpReq)
-        Assert.That((service :> ISonarRestService).AuthenticateUser(conf), Is.True)
+        Assert.That((service :> ISonarRestService).AuthenticateUser(conf).Result, Is.True)
 
 
     [<Test>]
@@ -64,7 +64,7 @@ type AdministrationTests() =
                 .Create()
 
         let service = SonarService(mockHttpReq)
-        Assert.That((service :> ISonarRestService).AuthenticateUser(conf), Is.False)
+        Assert.That((service :> ISonarRestService).AuthenticateUser(conf).Result, Is.False)
 
     [<Test>]
     member test.``Should Fail authentication When Sonar less than 3.3 so skip authetication`` () =
@@ -76,7 +76,7 @@ type AdministrationTests() =
                 .Create()
 
         let service = SonarService(mockHttpReq)
-        Assert.That((service :> ISonarRestService).AuthenticateUser(conf), Is.False)
+        Assert.That((service :> ISonarRestService).AuthenticateUser(conf).Result, Is.False)
 
     [<Test>]
     member test.``Should Get Correct server version with 3.6`` () =

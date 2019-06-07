@@ -416,8 +416,6 @@ type JsonResourceWithMetrics = JsonProvider<""" [{"id":1,"key":"GroupId:ProjectI
 
 type JsonValidateUser = JsonProvider<""" {"valid":true} """>
 
-type JsonUsers = JsonProvider<""" {"users":[{"login":"user1","name":"","active":true},{"login":"admin","name":"Administrator","active":true},{"login":"user2","name":"Real Name","active":true,"email":"real.name@org.com"}]} """>
-
 type JSonProfile = JsonProvider<""" [{"name":"profile","language":"lang","default":true,"rules":[{"key":"key1","repo":"repo1","severity":"BLOCKER"},{"key":"key2","repo":"repo","severity":"CRITICAL"}],"alerts":[{"metric":"metric1","operator":">","error":"50","warning":"70"},{"metric":"metric1","operator":">","error":"50","warning":"70"}]}] """>
 
 type JSonServerInfo = JsonProvider<""" {"id":"20130712144608","version":"3.6.1-SNAPSHOT","status":"UP"} """>

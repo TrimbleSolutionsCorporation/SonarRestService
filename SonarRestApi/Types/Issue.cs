@@ -47,6 +47,7 @@ namespace SonarRestService.Types
 
             this.Resolution = Resolution.UNDEFINED;
             this.Assignee = string.Empty;
+			this.Team = string.Empty;
             this.Author = string.Empty;
             this.IsNew = false;
             this.Key = string.Empty;
@@ -125,6 +126,11 @@ namespace SonarRestService.Types
         /// Gets or sets the assignee.
         /// </summary>
         public string Assignee { get; set; }
+
+		/// <summary>
+		/// Team field
+		/// </summary>
+		public string Team { get; set; }
 
         /// <summary>
         /// Gets or sets the author.

@@ -1,0 +1,35 @@
+{
+	"teams": [
+		{s
+            "jocs@email.com"
+          ]
+				},
+				{
+					"name": "Ganga",
+          "alias": [
+            "jorge.costa@email.com",
+            "jocs@email.com",
+            "jocs@email.com"
+          ]
+				}
+			]
+		},
+		{
+			"team_name": "Sold Team",
+			"users": [
+				{
+					"name": "Lim",
+					"alias": [
+						"Lim@email.com"
+					]
+				},
+				{
+					"name": "Other",
+					"alias": [
+            "other@email.com"
+					]
+				}
+			]
+		}
+	]
+}

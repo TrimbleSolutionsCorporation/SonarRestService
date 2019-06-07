@@ -5,6 +5,7 @@ open SonarRestService.Types
 open SonarRestServiceImpl
 open System
 open SonarRestService
+open System.Threading
 
 type ComponentTreeSearch = JsonProvider<""" {"paging":{"pageIndex":1,"pageSize":100,"total":2},"baseComponent":{"id":"e6cebf55-ccc4-4bc1-a27e-7b447c9f724c","key":"Project:ComponentBla","name":"ComponentBla","qualifier":"TRK","measures":[]},"components":[{"id":"AVEzWO92k3Oz8Oa46je4","key":"Project:ComponentBla:Project:ComponentBla:9AC47FE5-B1C8-416A-BFB4-632B7171E031:UndoRedoBlaModel.cs","name":"UndoRedoBlaModel.cs","qualifier":"FIL","path":"UndoRedoBlaModel.cs","language":"cs","measures":[{"metric":"new_uncovered_conditions","periods":[{"index":1,"value":"0"}]},{"metric":"new_uncovered_lines","periods":[{"index":1,"value":"1"}]},{"metric":"new_coverage","periods":[{"index":1,"value":"0.0"}]}]},{"id":"AVEzWO94k3Oz8Oa46jgV","key":"Project:ComponentBla:Project:ComponentBla:86AE155A-EC6F-4975-81F9-773177AD29FF:BlaTreeFeature.cs","name":"BlaTreeFeature.cs","qualifier":"FIL","path":"BlaTreeFeature.cs","language":"cs","measures":[{"metric":"new_uncovered_conditions","periods":[{"index":1,"value":"0"}]},{"metric":"new_uncovered_lines","periods":[{"index":1,"value":"1"}]},{"metric":"new_coverage","periods":[{"index":1,"value":"83.3333333333333"}]}]}]} """>
 type PeriodsResponse = JsonProvider<""" {"component":{"id":"14170a50-b95b-4506-8f1a-19856f187137","key":"Project:ProjectName","name":"ProjectName","qualifier":"TRK","measures":[{"metric":"new_coverage","periods":[{"index":1,"value":"24.5416078984485"}]}]},"periods":[{"index":1,"mode":"previous_version","date":"2012-02-05T00:11:53+0200","parameter":"VersionName"}]} """>
@@ -16,7 +17,7 @@ let GetLeakPeriodStart(conf : ISonarConfiguration, projectIn : Resource, httpcon
     let data = PeriodsResponse.Parse(responsecontent)
     data.Periods.[0].Date
 
-let GetCoverageReportOnNewCodeOnLeak(conf : ISonarConfiguration, projectIn : Resource, httpconnector : IHttpSonarConnector, logger:IRestLogger) =
+let GetCoverageReportOnNewCodeOnLeak(conf : ISonarConfiguration, projectIn : Resource, httpconnector : IHttpSonarConnector, token:CancellationToken, logger:IRestLogger) =
     let coverageLeak = new System.Collections.Generic.Dictionary<string, CoverageDifferencial>()
     let AddComponentToLeak(comp:ComponentTreeSearch.Component, date:DateTime) = 
         let resource = new Resource()
@@ -38,13 +39,16 @@ let GetCoverageReportOnNewCodeOnLeak(conf : ISonarConfiguration, projectIn : Res
         covmeas.UncoveredConditons <- Convert.ToInt32(newcond.Periods.[0].Value)
         let newlines = comp.Measures |> Seq.find (fun meas -> meas.Metric = "new_uncovered_lines")
         covmeas.UncoveredLines <- Convert.ToInt32(newlines.Periods.[0].Value)
+        let newLinesTocov = comp.Measures |> Seq.find (fun meas -> meas.Metric = "new_lines_to_cover")
+        covmeas.NewLinesToCover <- newLinesTocov.Periods.[0].Value
+        let newConditionsToCover = comp.Measures |> Seq.find (fun meas -> meas.Metric = "new_conditions_to_cover")
+        covmeas.NewConditionsToCover <- newConditionsToCover.Periods.[0].Value
 
         if resource.Lines.Count > 0 then
             coverageLeak.Add(comp.Key, covmeas)
 
-    let rec GetComponents(page:int, date:DateTime) =
-        
-        let url = sprintf "/api/measures/component_tree?asc=true&ps=100&metricSortFilter=withMeasuresOnly&s=metricPeriod,name&metricSort=new_coverage&metricPeriodSort=1&baseComponentKey=%s&metricKeys=new_coverage,new_uncovered_lines,new_uncovered_conditions&strategy=leaves&p=%i" projectIn.Key page
+    let rec GetComponents(page:int, date:DateTime) =        
+        let url = sprintf "/api/measures/component_tree?asc=true&ps=100&metricSortFilter=withMeasuresOnly&s=metricPeriod,name&metricSort=new_coverage&metricPeriodSort=1&baseComponentKey=%s&metricKeys=new_coverage,new_uncovered_lines,new_uncovered_conditions,new_conditions_to_cover,new_lines_to_cover&strategy=leaves&p=%i" projectIn.Key page
         logger.ReportMessage("Progress: " + url)
         let responsecontent = httpconnector.HttpSonarGetRequest(conf, url)
         let data = ComponentTreeSearch.Parse(responsecontent)
@@ -54,7 +58,7 @@ let GetCoverageReportOnNewCodeOnLeak(conf : ISonarConfiguration, projectIn : Res
         if data.Components.Length = data.Paging.PageSize then
             let nextPage = page + 1
             try
-            GetComponents(nextPage, date)
+                if not(token.IsCancellationRequested) then GetComponents(nextPage, date)
             with
             | ex -> let message = sprintf "Failed Page: %i with %s" nextPage ex.Message
                     logger.ReportMessage(message)

@@ -13,6 +13,7 @@ open System.Linq
 
 open System.Reflection
 open RestSharp
+open System.Threading
 
 type DifferentialServiceTest() =
    
@@ -45,7 +46,7 @@ type DifferentialServiceTest() =
                 .Setup(fun x -> <@ x.HttpSonarGetRequest(any(), url5) @>).Returns("{\"sources\":[]}")
 
         let resource = new Resource( Key = "projectKey", IdString = "id")
-        let resources = DifferencialService.GetCoverageReportOnNewCodeOnLeak(conf, resource, mockHttpReq.Create(), mockNotMan.Create())
+        let resources = DifferencialService.GetCoverageReportOnNewCodeOnLeak(conf, resource, mockHttpReq.Create(), (new CancellationTokenSource()).Token, mockNotMan.Create())
         Assert.That(resources.Count, Is.EqualTo(2))
         let covme = resources.["Project:ComponentBla:Project:ComponentBla:9AC47FE5-B1C8-416A-BFB4-632B7171E031:UndoRedoBlaModel.cs"]
         Assert.That(covme.Id, Is.EqualTo("AVEzWO92k3Oz8Oa46je4"))
@@ -76,7 +77,7 @@ type DifferentialServiceTest() =
                 .Setup(fun x -> <@ x.HttpSonarGetRequest(any(), url5) @>).Returns("{\"sources\":[]}")
 
         let resource = new Resource( Key = "projectKey", IdString = "id")
-        let resources = DifferencialService.GetCoverageReportOnNewCodeOnLeak(conf, resource, mockHttpReq.Create(), mockNotMan.Create())
+        let resources = DifferencialService.GetCoverageReportOnNewCodeOnLeak(conf, resource, mockHttpReq.Create(), (new CancellationTokenSource()).Token, mockNotMan.Create())
         Assert.That(resources.Count, Is.EqualTo(2))
         let covme = resources.["Project:ComponentBla:Project:ComponentBla:9AC47FE5-B1C8-416A-BFB4-632B7171E031:UndoRedoBlaModel.cs"]
         Assert.That(covme.Id, Is.EqualTo("AVEzWO92k3Oz8Oa46je4"))

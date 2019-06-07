@@ -53,7 +53,7 @@ namespace SonarRestService.Types
         /// <value>
         /// The key.
         /// </value>
-        public string key { get; set; }
+        public string Key { get; set; }
 
         /// <summary>
         /// Gets or sets the value.

@@ -1,0 +1,42 @@
+{
+	"teams": [
+		{
+			"team_name": "Bat Team",
+			"users": [
+				{
+					"name": "Jorge Costa",
+          "alias": [
+            "jorge.costa@email.com",
+            "ext-florin.jura@trimble.com",
+            "jocs@email.com"
+          ]
+				},
+				{
+					"name": "Ganga",
+          "alias": [
+            "jorge.costa@email.com",
+            "jocs@email.com",
+            "jocs@email.com"
+          ]
+				}
+			]
+		},
+		{
+			"team_name": "Sold Team",
+			"users": [
+				{
+					"name": "Lim",
+					"alias": [
+						"Lim@email.com"
+					]
+				},
+				{
+					"name": "Other",
+					"alias": [
+            "other@email.com"
+					]
+				}
+			]
+		}
+	]
+}
