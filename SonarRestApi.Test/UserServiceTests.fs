@@ -18,6 +18,14 @@ type UserServiceTests() =
             .Create()
     let cancelMonitors = new CancellationTokenSource()
     
+
+    [<Test>]
+    member test.``Matches names in different order`` () =
+        Assert.That(UsersService.matchUserNames("Jorge Costa", "Jorge Costa"), Is.True)
+        Assert.That(UsersService.matchUserNames("Jorge Costa", "Costa Jorge"), Is.True)
+        Assert.That(UsersService.matchUserNames("Jorge Manuel Costa", "Manuel Costa Jorge"), Is.True)
+        Assert.That(UsersService.matchUserNames("Antonio", "Jorge Costa"), Is.False)
+    
     [<Test>]
     member test.``Gets empty teams if no users are found`` () =
         let mockHttpReq =

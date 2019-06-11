@@ -41,6 +41,23 @@ let getUserListFromXmlResponse(responsecontent : string) =
 
     userList
 
+let matchUserNames(nameone:string, nametwo:string) = 
+    if nameone = nametwo then
+        true
+    else
+        let elementsNameOne = nameone.Split()
+        let elementsNameTwo = nametwo.Split()
+        if elementsNameTwo.Length <> elementsNameOne.Length then
+            false
+        else
+            let mutable increment = 0
+            elementsNameOne |> Seq.iter (fun nameone -> (if elementsNameTwo.Contains(nameone) then increment <- increment + 1))
+            if increment = elementsNameOne.Count() then
+                true
+            else
+                false
+
+
 let GetTeams(users : System.Collections.Generic.IEnumerable<User>, teamsFile:string) =
     let teams = new System.Collections.Generic.List<Team>()
 
@@ -49,16 +66,13 @@ let GetTeams(users : System.Collections.Generic.IEnumerable<User>, teamsFile:str
             let teamToAdd = Team()
             teamToAdd.Users <- System.Collections.Generic.List<User>()
             teamToAdd.Name <- team.TeamName
-
+            
             let AddToTeamIfNotThere(user:TeamsJson.User) =
-                let isFoundInUsers = 
-                    users
-                    |> Seq.tryFind(fun userInSonar -> (user.Alias |> (Seq.tryFind(fun alias -> alias.ToLower().Equals(userInSonar.Email.ToLower())))).IsSome)
+                let isFoundInUsers = users |> Seq.tryFind(fun userInSonar -> matchUserNames(userInSonar.Name, user.Name))
 
                 if isFoundInUsers.IsSome && (teamToAdd.Users |> Seq.tryFind (fun element -> element.Name.Equals(isFoundInUsers.Value.Name))).IsNone then
-                    let userInTeam = team.Users |> Seq.tryFind (fun elem -> (elem.Alias |> Seq.tryFind(fun email -> email.ToLower().Equals(isFoundInUsers.Value.Email.ToLower()))).IsSome)
                     isFoundInUsers.Value.Team <- team.TeamName
-                    userInTeam.Value.Alias |> Seq.iter (fun elem -> isFoundInUsers.Value.AddionalEmails.Add(elem))
+                    user.Alias |> Seq.iter (fun elem -> isFoundInUsers.Value.AddionalEmails.Add(elem))
                     teamToAdd.Users.Add(isFoundInUsers.Value)
 
             team.Users
