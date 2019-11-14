@@ -34,6 +34,8 @@ let getUserListFromXmlResponse(responsecontent : string) =
         | None -> newUser.Name <- ""
         | Some c -> newUser.Name <- c
 
+        let login = user.Login
+        System.Diagnostics.Debug.Write(login)
         newUser.Active <- user.Active
         newUser.Login <- user.Login
 
@@ -41,7 +43,9 @@ let getUserListFromXmlResponse(responsecontent : string) =
 
     userList
 
-let matchUserNames(nameone:string, nametwo:string) = 
+let matchUserNames(nameonein:string, nametwoin:string) = 
+    let nameone = nameonein.ToLower()
+    let nametwo = nametwoin.ToLower()
     if nameone = nametwo then
         true
     else
@@ -68,6 +72,7 @@ let GetTeams(users : System.Collections.Generic.IEnumerable<User>, teamsFile:str
             teamToAdd.Name <- team.TeamName
             
             let AddToTeamIfNotThere(user:TeamsJson.User) =
+                let userdata = user.Name
                 let isFoundInUsers = users |> Seq.tryFind(fun userInSonar -> matchUserNames(userInSonar.Name, user.Name))
 
                 if isFoundInUsers.IsSome && (teamToAdd.Users |> Seq.tryFind (fun element -> element.Name.Equals(isFoundInUsers.Value.Name))).IsNone then

@@ -63,3 +63,15 @@ type UserServiceTests() =
         Assert.That(juser.Team, Is.EqualTo("Bat Team"))
         Assert.That(juser.AddionalEmails.Count, Is.EqualTo(3))
         Assert.That(suser.Team, Is.EqualTo("Sold Team"))
+
+
+    [<Test>]
+    member test.``Gets empty teams if no users are found ddfd`` () =
+        let mockHttpReq =
+            Mock<IHttpSonarConnector>()
+                .Create()
+        let service = SonarService(JsonSonarConnector())
+        let users = (service :> ISonarRestService).GetUserList(ConnectionConfiguration("http://sonar", "jocs", "pdJ722NUjco", 1.0)).GetAwaiter().GetResult()
+        
+        let teams = (service :> ISonarRestService).GetTeams(users, @"e:\teams.json").GetAwaiter().GetResult()
+        ()

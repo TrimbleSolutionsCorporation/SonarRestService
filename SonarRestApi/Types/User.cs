@@ -15,11 +15,13 @@ namespace SonarRestService.Types
 {
     using System;
     using System.Collections.Generic;
+    using System.Diagnostics;
 
     /// <summary>
     /// The user.
     /// </summary>
     [Serializable]
+    [DebuggerDisplay("{DebuggerDisplay,nq}")]
     public class User
     {
         /// <summary>
@@ -27,8 +29,8 @@ namespace SonarRestService.Types
         /// </summary>
         public User()
         {
-			this.AddionalEmails = new List<string>();
-		}
+            this.AddionalEmails = new List<string>();
+        }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="User"/> class.
@@ -51,8 +53,8 @@ namespace SonarRestService.Types
             this.Name = name;
             this.Active = active;
             this.Email = email;
-			this.Team = team;
-			this.AddionalEmails = new List<string>();
+            this.Team = team;
+            this.AddionalEmails = new List<string>();
         }
 
         /// <summary>
@@ -75,22 +77,30 @@ namespace SonarRestService.Types
         /// </summary>
         public string Email { get; set; }
 
-		/// <summary>
-		/// Team
-		/// </summary>
-		public string Team { get; set; }
+        /// <summary>
+        /// Team
+        /// </summary>
+        public string Team { get; set; }
 
-		/// <summary>
-		/// Gets or sets a value indicating whether this <see cref="User"/> is selected.
-		/// </summary>
-		/// <value>
-		///   <c>true</c> if selected; otherwise, <c>false</c>.
-		/// </value>
-		public bool Selected { get; set; }
+        /// <summary>
+        /// Gets or sets a value indicating whether this <see cref="User"/> is selected.
+        /// </summary>
+        /// <value>
+        ///   <c>true</c> if selected; otherwise, <c>false</c>.
+        /// </value>
+        public bool Selected { get; set; }
 
-		/// <summary>
-		/// Addional emails alias if they exist
-		/// </summary>
-		public List<string> AddionalEmails { get; set; }
+        /// <summary>
+        /// Addional emails alias if they exist
+        /// </summary>
+        public List<string> AddionalEmails { get; set; }
+
+        private string DebuggerDisplay
+        {
+            get
+            {
+                return $"{Name} : {Email} => {string.Concat(AddionalEmails, ",")}";
+            }
+        }
     }
 }
