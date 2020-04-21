@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <Version>1.1.1</Version>
+    <Version>1.2.0</Version>
     <TargetFrameworks>netstandard2.0;net472</TargetFrameworks>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <AssemblyVersion>1.0.0.0</AssemblyVersion>
@@ -11,10 +11,25 @@
     <SignAssembly>true</SignAssembly>
     <Company>Trimble Solutions Corporation</Company>
     <AssemblyOriginatorKeyFile>..\AssemblyKey.snk</AssemblyOriginatorKeyFile>
+    <repositoryUrl>https://github.com/TrimbleSolutionsCorporation/SonarRestService.git</repositoryUrl>
+    <Description>SonarQube rest api for .net languages</Description>
+    <Copyright>Copyright © 2020 Trimble Solutions Corporation.</Copyright>
+    <RepositoryType>git</RepositoryType>
+    <PackageTags>SonarQube Rest</PackageTags>
+    <PackageProjectUrl>https://github.com/TrimbleSolutionsCorporation/SonarRestService</PackageProjectUrl>
+    <PackageLicenseExpression></PackageLicenseExpression>
+    <PackageLicenseFile>LICENSE.txt</PackageLicenseFile>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="RestSharp" Version="106.6.9" />
+    <PackageReference Include="RestSharp" Version="106.10.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="..\LICENSE.txt">
+      <Pack>True</Pack>
+      <PackagePath></PackagePath>
+    </None>
   </ItemGroup>
 
 </Project>

@@ -557,6 +557,11 @@ type SonarService(httpconnector : IHttpSonarConnector) =
                 return UsersService.GetUserList(newConf, httpconnector)
             } |> Async.StartAsTask
     
+        member this.GetTeamsFile(teamsFile:string) =
+            async {
+                return UsersService.GetTeamsFile(teamsFile)
+            } |> Async.StartAsTask
+
         member this.GetTeams(users : System.Collections.Generic.IEnumerable<User>, teamsFile:string) =
             async {
                 return UsersService.GetTeams(users, teamsFile)

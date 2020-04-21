@@ -61,6 +61,30 @@ let matchUserNames(nameonein:string, nametwoin:string) =
             else
                 false
 
+let GetTeamsFile(teamsFile:string) =
+    let teams = new System.Collections.Generic.List<Team>()
+
+    if File.Exists(teamsFile) then
+        let HandleTeam(team:TeamsJson.Team) = 
+            let teamToAdd = Team()
+            teamToAdd.Users <- System.Collections.Generic.List<User>()
+            teamToAdd.Name <- team.TeamName
+            
+            let AddToTeamIfNotThere(user:TeamsJson.User) =
+                let userdata = User()
+                userdata.Name <- user.Name
+                userdata.AddionalEmails.AddRange(user.Alias)
+                teamToAdd.Users.Add(userdata)
+            team.Users
+            |> Seq.iter (fun user -> AddToTeamIfNotThere(user))
+
+            if teamToAdd.Users.Count > 0 then
+                teams.Add(teamToAdd)
+
+        let teams = TeamsJson.Parse(File.ReadAllText(teamsFile))
+        teams.Teams
+        |> Seq.iter (fun team -> HandleTeam(team))
+    teams
 
 let GetTeams(users : System.Collections.Generic.IEnumerable<User>, teamsFile:string) =
     let teams = new System.Collections.Generic.List<Team>()

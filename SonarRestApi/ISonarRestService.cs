@@ -196,16 +196,23 @@
 		/// <returns></returns>
 		Task<List<Team>> GetTeams(IEnumerable<User> availableUsers, string userListFile);
 
-		/// <summary>
-		/// Gets the available tags.
-		/// </summary>
-		/// <param name="conf">The conf.</param>
-		/// <param name="token">The token.</param>
-		/// <param name="logger">The logger.</param>
-		/// <returns>
-		/// tags
-		/// </returns>
-		Task<List<string>> GetAvailableTags(ISonarConfiguration conf, CancellationToken token, IRestLogger logger);
+        /// <summary>
+        /// Gets teams files
+        /// </summary>
+        /// <param name="userListFile">user list file</param>
+        /// <returns>list of teams</returns>
+        Task<List<Team>> GetTeamsFile(string userListFile);
+
+        /// <summary>
+        /// Gets the available tags.
+        /// </summary>
+        /// <param name="conf">The conf.</param>
+        /// <param name="token">The token.</param>
+        /// <param name="logger">The logger.</param>
+        /// <returns>
+        /// tags
+        /// </returns>
+        Task<List<string>> GetAvailableTags(ISonarConfiguration conf, CancellationToken token, IRestLogger logger);
 
         /// <summary>
         /// Sets the issue tags.
