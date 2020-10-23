@@ -15,6 +15,11 @@
         public string Name { get; set; }
 
         /// <summary>
+        /// Team Email
+        /// </summary>
+        public string Email { get; set; }
+
+        /// <summary>
         /// Users
         /// </summary>
         public ICollection<User> Users { get; set; }
