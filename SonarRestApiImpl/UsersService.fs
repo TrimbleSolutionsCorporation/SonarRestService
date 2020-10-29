@@ -16,7 +16,7 @@ open SonarRestServiceImpl
 
 type JsonUsers = JsonProvider<""" {"users":[{"login":"user1","name":"","active":true},{"login":"admin","name":"Administrator","active":true},{"login":"user2","name":"Real Name","active":true,"email":"real.name@org.com"}]} """>
 
-type TeamsJson = JsonProvider<"""{"teams":[{"team_name":"Bat Team","users":[{"name":"Jorge Costa","alias":["jorge.costa@trimble.com","jocs@trimble.com","jocs@trimble.com"]},{"name":"Ganga","alias":["jorge.costa@trimble.com","jocs@trimble.com","jocs@trimble.com"]}]},{"team_name":"Bat Team","users":[{"name":"Jorge Costa","alias":["jorge.costa@trimble.com","jocs@trimble.com","jocs@trimble.com"]},{"name":"Ganga","alias":["jorge.costa@trimble.com","jocs@trimble.com","jocs@trimble.com"]}]}]}""">
+type TeamsJson = JsonProvider<"""{"teams":[{"team_email": "Structures.PDPF-Bat.trimble.com","team_name":"Bat Team","users":[{"name":"Jorge Costa","alias":["jorge.costa@trimble.com","jocs@trimble.com","jocs@trimble.com"]},{"name":"Ganga","alias":["jorge.costa@trimble.com","jocs@trimble.com","jocs@trimble.com"]}]},{"team_name":"Bat Team","users":[{"name":"Jorge Costa","alias":["jorge.costa@trimble.com","jocs@trimble.com","jocs@trimble.com"]},{"name":"Ganga","alias":["jorge.costa@trimble.com","jocs@trimble.com","jocs@trimble.com"]}]}]}""">
 
 let getUserListFromXmlResponse(responsecontent : string) =
     let data = JsonUsers.Parse(responsecontent) 
@@ -69,6 +69,7 @@ let GetTeamsFile(teamsFile:string) =
             let teamToAdd = Team()
             teamToAdd.Users <- System.Collections.Generic.List<User>()
             teamToAdd.Name <- team.TeamName
+            teamToAdd.Email <- team.TeamEmail
             
             let AddToTeamIfNotThere(user:TeamsJson.User) =
                 let userdata = User()
@@ -94,6 +95,7 @@ let GetTeams(users : System.Collections.Generic.IEnumerable<User>, teamsFile:str
             let teamToAdd = Team()
             teamToAdd.Users <- System.Collections.Generic.List<User>()
             teamToAdd.Name <- team.TeamName
+            teamToAdd.Email <- team.TeamEmail
             
             let AddToTeamIfNotThere(user:TeamsJson.User) =
                 let userdata = user.Name
