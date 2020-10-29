@@ -69,7 +69,8 @@ let GetTeamsFile(teamsFile:string) =
             let teamToAdd = Team()
             teamToAdd.Users <- System.Collections.Generic.List<User>()
             teamToAdd.Name <- team.TeamName
-            teamToAdd.Email <- team.TeamEmail
+            if team.TeamEmail.IsSome then
+                teamToAdd.Email <- team.TeamEmail.Value
             
             let AddToTeamIfNotThere(user:TeamsJson.User) =
                 let userdata = User()
@@ -95,7 +96,8 @@ let GetTeams(users : System.Collections.Generic.IEnumerable<User>, teamsFile:str
             let teamToAdd = Team()
             teamToAdd.Users <- System.Collections.Generic.List<User>()
             teamToAdd.Name <- team.TeamName
-            teamToAdd.Email <- team.TeamEmail
+            if team.TeamEmail.IsSome then
+                teamToAdd.Email <- team.TeamEmail.Value
             
             let AddToTeamIfNotThere(user:TeamsJson.User) =
                 let userdata = user.Name
