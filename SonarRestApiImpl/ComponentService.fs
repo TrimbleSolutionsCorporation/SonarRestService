@@ -25,7 +25,6 @@ type Component = JsonProvider<"""
     },
     "components": [{
         "organization": "default-organization",
-        "id": "82e699ac-99e7-4a88-b3dc-135a56151e3a",
         "key": "org.group.core:ProjName:ProjName",
         "name": "ProjName",
         "qualifier": "DIR",
@@ -60,7 +59,7 @@ let IndexServerResources(conf : ISonarConfiguration, project : Resource, httpcon
         for resource in resources.Components do
             try
                 let res = Resource()
-                res.IdString <- resource.Id.String.Value
+                //try res.IdString <- resource.Id.String.Value with | _ -> ()
                 res.Key <- resource.Key
                 res.Name <- resource.Name
                 res.Qualifier <- resource.Qualifier

@@ -12,7 +12,12 @@ type PeriodsResponse = JsonProvider<""" {"component":{"id":"14170a50-b95b-4506-8
 type CoverageReportType = JsonProvider<""" {"component":{"id":"sdafldfjlakshdjfh","key":"Tekla.Structures.DotApps:ComponentCatalog","name":"ComponentCatalog","qualifier":"TRK","measures":[{"metric":"ncloc","value":"23622","periods":[{"index":1,"value":"23"}]},{"metric":"new_lines","periods":[{"index":1,"value":"62"}]},{"metric":"coverage","value":"62.8","periods":[{"index":1,"value":"11.0"}]},{"metric":"new_coverage","periods":[{"index":1,"value":"73.0769230769231"}]}]}} """>
 
 let GetLeakPeriodStart(conf : ISonarConfiguration, projectIn : Resource, httpconnector : IHttpSonarConnector) =
-    let url = sprintf "/api/measures/component?additionalFields=periods&componentKey=%s&metricKeys=lines" projectIn.Key
+    let url =
+        if conf.SonarVersion < 7.6 then
+            sprintf "/api/measures/component?additionalFields=periods&componentKey=%s&metricKeys=lines" projectIn.Key
+        else
+            sprintf "/api/measures/component?additionalFields=periods&component=%s&metricKeys=lines" projectIn.Key
+
     let responsecontent = httpconnector.HttpSonarGetRequest(conf, url)
     let data = PeriodsResponse.Parse(responsecontent)
     data.Periods.[0].Date
