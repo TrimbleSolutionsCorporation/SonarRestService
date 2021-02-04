@@ -104,8 +104,12 @@ let GetCoverageReport(conf : ISonarConfiguration, projectIn : Resource, httpconn
 
         coverageReport.Add(comp.Key, covmeas)
 
+    let url =
+        if conf.SonarVersion < 7.6 then
+            sprintf "/api/measures/component?componentKey=%s&metricKeys=new_coverage,ncloc,coverage,new_lines" projectIn.Key
+        else
+            sprintf "/api/measures/component?component=%s&metricKeys=new_coverage,ncloc,coverage,new_lines" projectIn.Key
 
-    let url = sprintf "/api/measures/component?componentKey=%s&metricKeys=new_coverage,ncloc,coverage,new_lines" projectIn.Key
     let responsecontent = httpconnector.HttpSonarGetRequest(conf, url)
     let data = CoverageReportType.Parse(responsecontent)
     AddComponentToReport(data.Component)
