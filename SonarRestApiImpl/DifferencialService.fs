@@ -137,11 +137,13 @@ let GetSummaryProjectReport(conf : ISonarConfiguration, projectIn : Resource, ht
 
         coverageReport.Add(comp.Key, summaryReport)
 
-    let url =
+    let compElement = 
         if conf.SonarVersion < 7.6 then
-            sprintf "/api/measures/component?componentKey=%s&metricKeys=new_coverage,ncloc,coverage,new_lines,ncloc_language_distribution,violations,new_violations,new_technical_debt,cognitive_complexity,complexity,sqale_index,lines" projectIn.Key
+            sprintf "componentKey=%s" projectIn.Key
         else
-            sprintf "/api/measures/component?component=%s&metricKeys=new_coverage,ncloc,coverage,new_lines,ncloc_language_distribution,violations,new_violations,new_technical_debt,cognitive_complexity,complexity,sqale_index,lines" projectIn.Key
+            sprintf "component=%s" projectIn.Key
+
+    let url = sprintf "/api/measures/component?%s&metricKeys=new_coverage,ncloc,coverage,new_lines,ncloc_language_distribution,violations,new_violations,new_technical_debt,cognitive_complexity,complexity,sqale_index,lines" compElement
 
     let responsecontent = httpconnector.HttpSonarGetRequest(conf, url)
     let data = CoverageReportType.Parse(responsecontent)
@@ -182,12 +184,13 @@ let GetCoverageReport(conf : ISonarConfiguration, projectIn : Resource, httpconn
 
         coverageReport.Add(comp.Key, covmeas)
 
-    let url =
+    let compElement = 
         if conf.SonarVersion < 7.6 then
-            sprintf "/api/measures/component?componentKey=%s&metricKeys=new_coverage,ncloc,coverage,new_lines,ncloc_language_distribution" projectIn.Key
+            sprintf "componentKey=%s" projectIn.Key
         else
-            sprintf "/api/measures/component?component=%s&metricKeys=new_coverage,ncloc,coverage,new_lines,ncloc_language_distribution" projectIn.Key
+            sprintf "component=%s" projectIn.Key
 
+    let url = sprintf "/api/measures/component?%s&metricKeys=new_coverage,ncloc,coverage,new_lines,ncloc_language_distribution" compElement
     let responsecontent = httpconnector.HttpSonarGetRequest(conf, url)
     let data = CoverageReportType.Parse(responsecontent)
     AddComponentToReport(data.Component)
