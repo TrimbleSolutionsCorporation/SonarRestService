@@ -18,6 +18,7 @@ namespace SonarRestService.Types
     /// <summary>
     /// The comment.
     /// </summary>
+    [Serializable]
     public class Comment
     {
         /// <summary>
@@ -47,11 +48,11 @@ namespace SonarRestService.Types
         /// </param>
         public Comment(DateTime createAt, string htmlText, string key, string login, int id)
         {
-            this.CreatedAt = createAt;
-            this.HtmlText = htmlText;
-            this.Key = key;
-            this.Login = login;
-            this.Id = id;
+            CreatedAt = createAt;
+            HtmlText = htmlText;
+            Key = key;
+            Login = login;
+            Id = id;
         }
 
         /// <summary>

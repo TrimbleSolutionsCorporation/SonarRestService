@@ -1,8 +1,11 @@
 ﻿namespace SonarRestService.Types
 {
+    using System;
+
     /// <summary>
     /// 
     /// </summary>
+    [Serializable]
     public class ExplanationLine
     {
         /// <summary>

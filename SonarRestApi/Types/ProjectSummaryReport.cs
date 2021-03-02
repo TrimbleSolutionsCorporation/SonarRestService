@@ -62,14 +62,6 @@
         public string LinesOfCodeLangDistribution { get; set; }
 
         /// <summary>
-        /// Gets or sets the resource.
-        /// </summary>
-        /// <value>
-        /// The resource.
-        /// </value>
-        public Resource resource { get; set; }
-
-        /// <summary>
         /// Gets or sets the uncovered conditons.
         /// </summary>
         /// <value>

@@ -85,7 +85,7 @@ let GetSummaryProjectReport(conf : ISonarConfiguration, projectIn : Resource, ht
         resource.Name <- comp.Name
 
         let summaryReport = new ProjectSummaryReport()
-        summaryReport.resource <- resource
+        summaryReport.Resource <- resource
         summaryReport.Id <- comp.Id.ToString()
         let newcov = comp.Measures |> Seq.tryFind (fun meas -> meas.Metric = "new_coverage")
         if newcov.IsSome then
