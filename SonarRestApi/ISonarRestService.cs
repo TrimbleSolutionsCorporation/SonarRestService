@@ -327,7 +327,7 @@
         /// </summary>
         /// <param name="props">The props.</param>
         /// <param name="project">The project.</param>
-        /// <returns></returns>
+        /// <returns>coverage report, obsolete</returns>
         Task<Dictionary<string, CoverageReport>> GetCoverageReport(ISonarConfiguration props, Resource project, CancellationToken token, IRestLogger logger);
 
         /// <summary>
@@ -335,7 +335,9 @@
         /// </summary>
         /// <param name="props">The props.</param>
         /// <param name="project">The project.</param>
-        /// <returns></returns>
+        /// <param name="token">cancelation token</param>
+        /// <param name="logger">logger for sonar</param>
+        /// <returns>project summary report with new_coverage,ncloc,coverage,new_lines,ncloc_language_distribution,violations,new_violations,new_technical_debt,cognitive_complexity,complexity,lines,sqale_index</returns>
         Task<Dictionary<string, ProjectSummaryReport>> GetSummaryProjectReport(ISonarConfiguration props, Resource project, CancellationToken token, IRestLogger logger);
 
         /// <summary>
