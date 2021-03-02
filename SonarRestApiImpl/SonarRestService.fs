@@ -584,13 +584,16 @@ type SonarService(httpconnector : IHttpSonarConnector) =
                     return error
             } |> Async.StartAsTask
 
-
-
         member this.GetCoverageReportOnNewCodeOnLeak(conf: ISonarConfiguration, project: Resource, token:CancellationToken, logger:IRestLogger) =
             async {
                 return DifferencialService.GetCoverageReportOnNewCodeOnLeak(conf, project, httpconnector, token, logger)
             } |> Async.StartAsTask
             
+
+        member this.GetSummaryProjectReport(conf: ISonarConfiguration, project: Resource, token:CancellationToken, logger:IRestLogger) =
+            async {
+                return DifferencialService.GetSummaryProjectReport(conf, project, httpconnector)
+            } |> Async.StartAsTask
 
         member this.GetCoverageReport(conf: ISonarConfiguration, project: Resource, token:CancellationToken, logger:IRestLogger) =
             async {

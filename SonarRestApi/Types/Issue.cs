@@ -15,13 +15,13 @@ namespace SonarRestService.Types
 {
     using System;
     using System.Collections.Generic;
-    using System.ComponentModel;
-    using System.Runtime.CompilerServices;
+    using System.Diagnostics;
 
     /// <summary>
     /// The issue.
     /// </summary>
     [Serializable]
+    [DebuggerDisplay("{DebuggerDisplay,nq}")]
     public class Issue
     {
         /// <summary>
@@ -29,31 +29,31 @@ namespace SonarRestService.Types
         /// </summary>
         public Issue()
         {
-            this.Tags = new SortedSet<string>();
-            this.Comments = new List<Comment>();
-            this.Explanation = new List<ExplanationLine>();
-            this.Message = string.Empty;
-            this.CreationDate = DateTime.Now;
-            this.CloseDate = DateTime.Now;
-            this.Component = string.Empty;
+            Tags = new SortedSet<string>();
+            Comments = new List<Comment>();
+            Explanation = new List<ExplanationLine>();
+            Message = string.Empty;
+            CreationDate = DateTime.Now;
+            CloseDate = DateTime.Now;
+            Component = string.Empty;
 
-            this.Line = -1;
-            this.Project = string.Empty;
-            this.UpdateDate = DateTime.Now;
-            this.Status = IssueStatus.UNDEFINED;
-            this.Severity = Severity.UNDEFINED;
-            this.Rule = string.Empty;
+            Line = -1;
+            Project = string.Empty;
+            UpdateDate = DateTime.Now;
+            Status = IssueStatus.UNDEFINED;
+            Severity = Severity.UNDEFINED;
+            Rule = string.Empty;
 
 
-            this.Resolution = Resolution.UNDEFINED;
-            this.Assignee = string.Empty;
-			this.Team = string.Empty;
-            this.Author = string.Empty;
-            this.IsNew = false;
-            this.Key = string.Empty;
+            Resolution = Resolution.UNDEFINED;
+            Assignee = string.Empty;
+            Team = string.Empty;
+            Author = string.Empty;
+            IsNew = false;
+            Key = string.Empty;
 
-            this.Id = 0;
-            this.ViolationId = 0;
+            Id = 0;
+            ViolationId = 0;
         }
 
         /// <summary>Gets or sets the path.</summary>
@@ -83,6 +83,11 @@ namespace SonarRestService.Types
         /// Gets or sets the line.
         /// </summary>
         public int Line { get; set; }
+
+        /// <summary>
+        /// Gets or set the text range
+        /// </summary>
+        public TextRange TextRange { get; set; }
 
         /// <summary>
         /// Gets or sets the column.
@@ -127,10 +132,10 @@ namespace SonarRestService.Types
         /// </summary>
         public string Assignee { get; set; }
 
-		/// <summary>
-		/// Team field
-		/// </summary>
-		public string Team { get; set; }
+        /// <summary>
+        /// Team field
+        /// </summary>
+        public string Team { get; set; }
 
         /// <summary>
         /// Gets or sets the author.
@@ -217,41 +222,43 @@ namespace SonarRestService.Types
         public Issue DeepCopy()
         {
             var copyIssue = new Issue
-                                {
-                                    Id = this.Id,
-                                    Key = this.Key,
-                                    Line = this.Line,
-                                    Message = this.Message,
-                                    Project = this.Project,
-                                    Resolution = this.Resolution,
-                                    Rule = this.Rule,
-                                    Severity = this.Severity,
-                                    Status = this.Status,
-                                    UpdateDate = this.UpdateDate,
-                                    CloseDate = this.CloseDate,
-                                    Component = this.Component,
-                                    CreationDate = this.CreationDate,
-                                    Effort = this.Effort,
-                                    ViolationId = this.ViolationId,
-                                    Assignee = this.Assignee,
-                                    IssueTrackerId = this.IssueTrackerId,
-                                    Comments = new List<Comment>()
-                                };
+            {
+                Id = Id,
+                Key = Key,
+                Line = Line,
+                Message = Message,
+                Project = Project,
+                Resolution = Resolution,
+                Rule = Rule,
+                Severity = Severity,
+                Status = Status,
+                UpdateDate = UpdateDate,
+                CloseDate = CloseDate,
+                Component = Component,
+                CreationDate = CreationDate,
+                Effort = Effort,
+                ViolationId = ViolationId,
+                Assignee = Assignee,
+                IssueTrackerId = IssueTrackerId,
+                Comments = new List<Comment>()
+            };
 
-            foreach (var comment in this.Comments)
+            foreach (var comment in Comments)
             {
                 var copyComment = new Comment
-                                      {
-                                          CreatedAt = comment.CreatedAt,
-                                          HtmlText = comment.HtmlText,
-                                          Id = comment.Id,
-                                          Key = comment.Key,
-                                          Login = comment.Login
-                                      };
+                {
+                    CreatedAt = comment.CreatedAt,
+                    HtmlText = comment.HtmlText,
+                    Id = comment.Id,
+                    Key = comment.Key,
+                    Login = comment.Login
+                };
                 copyIssue.Comments.Add(copyComment);
             }
 
             return copyIssue;
         }
+
+        private string DebuggerDisplay => $"[{Line}:{Component}:{Key}] : {Status} :  {Author} : {Message}";
     }
 }

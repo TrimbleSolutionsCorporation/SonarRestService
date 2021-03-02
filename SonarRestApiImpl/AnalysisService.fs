@@ -20,7 +20,7 @@ let GetAnalysisId(conf : ISonarConfiguration, projectIn : Resource, date:DateTim
             let responsecontent = httpconnector.HttpSonarGetRequest(conf, url)
 
             let data = ProjectAnalysis.Parse(responsecontent)
-            let isFound = data.Analyses |> Seq.tryFind (fun c -> date >= c.Date.DateTime.Value.DateTime)
+            let isFound = data.Analyses |> Seq.tryFind (fun c -> c.Date.DateTime.IsSome && date >= c.Date.DateTime.Value.DateTime)
             match isFound with
             | Some date -> date.Key, date.Date.DateTime.Value.DateTime, ""
             | _ -> 

@@ -33,9 +33,9 @@ type DifferentialServiceTest() =
         let url4 = "/api/sources/lines?uuid=AVEzWO94k3Oz8Oa46jgV&from=1&to=500"
         let url5 = "/api/sources/lines?uuid=AVEzWO94k3Oz8Oa46jgV&from=501&to=1000"
 
-        let url3 = "/api/measures/component_tree?asc=true&ps=100&metricSortFilter=withMeasuresOnly&s=metricPeriod,name&metricSort=new_coverage&metricPeriodSort=1&baseComponentKey=projectKey&metricKeys=new_coverage,new_uncovered_lines,new_uncovered_conditions&strategy=leaves&p=1"
+        let url3 = "/api/measures/component_tree?asc=true&ps=100&metricSortFilter=withMeasuresOnly&s=metricPeriod,name&metricSort=new_coverage&metricPeriodSort=1&baseComponentKey=projectKey&metricKeys=new_coverage,new_uncovered_lines,new_uncovered_conditions,new_conditions_to_cover,new_lines_to_cover&strategy=leaves&p=1"
 
-        let data = """ {"paging":{"pageIndex":1,"pageSize":100,"total":2},"baseComponent":{"id":"e6cebf55-ccc4-4bc1-a27e-7b447c9f724c","key":"Project:ComponentBla","name":"ComponentBla","qualifier":"TRK","measures":[]},"components":[{"id":"AVEzWO92k3Oz8Oa46je4","key":"Project:ComponentBla:Project:ComponentBla:9AC47FE5-B1C8-416A-BFB4-632B7171E031:UndoRedoBlaModel.cs","name":"UndoRedoBlaModel.cs","qualifier":"FIL","path":"UndoRedoBlaModel.cs","language":"cs","measures":[{"metric":"new_uncovered_conditions","periods":[{"index":1,"value":"0"}]},{"metric":"new_uncovered_lines","periods":[{"index":1,"value":"1"}]},{"metric":"new_coverage","periods":[{"index":1,"value":"0.0"}]}]},{"id":"AVEzWO94k3Oz8Oa46jgV","key":"Project:ComponentBla:Project:ComponentBla:86AE155A-EC6F-4975-81F9-773177AD29FF:BlaTreeFeature.cs","name":"BlaTreeFeature.cs","qualifier":"FIL","path":"BlaTreeFeature.cs","language":"cs","measures":[{"metric":"new_uncovered_conditions","periods":[{"index":1,"value":"0"}]},{"metric":"new_uncovered_lines","periods":[{"index":1,"value":"1"}]},{"metric":"new_coverage","periods":[{"index":1,"value":"83.3333333333333"}]}]}]} """
+        let data = """ {"paging":{"pageIndex":1,"pageSize":100,"total":1},"baseComponent":{"id":"e6cebf55-ccc4-4bc1-a27e-7b447c9f724c","key":"Project:ComponentBla","name":"ComponentBla","qualifier":"TRK","measures":[]},"components":[{"id":"AVEzWO92k3Oz8Oa46je4","key":"Project:ComponentBla:Project:ComponentBla:9AC47FE5-B1C8-416A-BFB4-632B7171E031:UndoRedoBlaModel.cs","name":"UndoRedoBlaModel.cs","qualifier":"FIL","path":"UndoRedoBlaModel.cs","language":"cs","measures":[{"metric":"new_uncovered_conditions","periods":[{"index":1,"value":"0"}]},{"metric":"new_uncovered_lines","periods":[{"index":1,"value":"1"}]},{"metric":"new_conditions_to_cover","periods":[{"index":1,"value":"0.0"}]},{"metric":"new_lines_to_cover","periods":[{"index":1,"value":"0.0"}]},{"metric":"new_coverage","periods":[{"index":1,"value":"0.0"}]}]}]} """
         let mockHttpReq =
             Mock<IHttpSonarConnector>()
                 .Setup(fun x -> <@ x.HttpSonarGetRequest(any(), url0) @>).Returns(leakFromToday)
@@ -47,7 +47,7 @@ type DifferentialServiceTest() =
 
         let resource = new Resource( Key = "projectKey", IdString = "id")
         let resources = DifferencialService.GetCoverageReportOnNewCodeOnLeak(conf, resource, mockHttpReq.Create(), (new CancellationTokenSource()).Token, mockNotMan.Create())
-        Assert.That(resources.Count, Is.EqualTo(2))
+        Assert.That(resources.Count, Is.EqualTo(1))
         let covme = resources.["Project:ComponentBla:Project:ComponentBla:9AC47FE5-B1C8-416A-BFB4-632B7171E031:UndoRedoBlaModel.cs"]
         Assert.That(covme.Id, Is.EqualTo("AVEzWO92k3Oz8Oa46je4"))
         Assert.That(covme.resource.Lines.Count, Is.EqualTo(1))
@@ -64,9 +64,9 @@ type DifferentialServiceTest() =
         let url4 = "/api/sources/lines?uuid=AVEzWO94k3Oz8Oa46jgV&from=1&to=500"
         let url5 = "/api/sources/lines?uuid=AVEzWO94k3Oz8Oa46jgV&from=501&to=1000"
 
-        let url3 = "/api/measures/component_tree?asc=true&ps=100&metricSortFilter=withMeasuresOnly&s=metricPeriod,name&metricSort=new_coverage&metricPeriodSort=1&baseComponentKey=projectKey&metricKeys=new_coverage,new_uncovered_lines,new_uncovered_conditions&strategy=leaves&p=1"
+        let url3 = "/api/measures/component_tree?asc=true&ps=100&metricSortFilter=withMeasuresOnly&s=metricPeriod,name&metricSort=new_coverage&metricPeriodSort=1&baseComponentKey=projectKey&metricKeys=new_coverage,new_uncovered_lines,new_uncovered_conditions,new_conditions_to_cover,new_lines_to_cover&strategy=leaves&p=1"
 
-        let data = """ {"paging":{"pageIndex":1,"pageSize":100,"total":2},"baseComponent":{"id":"e6cebf55-ccc4-4bc1-a27e-7b447c9f724c","key":"Project:ComponentBla","name":"ComponentBla","qualifier":"TRK","measures":[]},"components":[{"id":"AVEzWO92k3Oz8Oa46je4","key":"Project:ComponentBla:Project:ComponentBla:9AC47FE5-B1C8-416A-BFB4-632B7171E031:UndoRedoBlaModel.cs","name":"UndoRedoBlaModel.cs","qualifier":"FIL","path":"UndoRedoBlaModel.cs","language":"cs","measures":[{"metric":"new_uncovered_conditions","periods":[{"index":1,"value":"0"}]},{"metric":"new_uncovered_lines","periods":[{"index":1,"value":"1"}]},{"metric":"new_coverage","periods":[{"index":1,"value":"0.0"}]}]},{"id":"AVEzWO94k3Oz8Oa46jgV","key":"Project:ComponentBla:Project:ComponentBla:86AE155A-EC6F-4975-81F9-773177AD29FF:BlaTreeFeature.cs","name":"BlaTreeFeature.cs","qualifier":"FIL","path":"BlaTreeFeature.cs","language":"cs","measures":[{"metric":"new_uncovered_conditions","periods":[{"index":1,"value":"0"}]},{"metric":"new_uncovered_lines","periods":[{"index":1,"value":"1"}]},{"metric":"new_coverage","periods":[{"index":1,"value":"83.3333333333333"}]}]}]} """
+        let data = """ {"paging":{"pageIndex":1,"pageSize":100,"total":1},"baseComponent":{"id":"e6cebf55-ccc4-4bc1-a27e-7b447c9f724c","key":"Project:ComponentBla","name":"ComponentBla","qualifier":"TRK","measures":[]},"components":[{"id":"AVEzWO92k3Oz8Oa46je4","key":"Project:ComponentBla:Project:ComponentBla:9AC47FE5-B1C8-416A-BFB4-632B7171E031:UndoRedoBlaModel.cs","name":"UndoRedoBlaModel.cs","qualifier":"FIL","path":"UndoRedoBlaModel.cs","language":"cs","measures":[{"metric":"new_uncovered_conditions","periods":[{"index":1,"value":"0"}]},{"metric":"new_uncovered_lines","periods":[{"index":1,"value":"1"}]},{"metric":"new_conditions_to_cover","periods":[{"index":1,"value":"0.0"}]},{"metric":"new_lines_to_cover","periods":[{"index":1,"value":"0.0"}]},{"metric":"new_coverage","periods":[{"index":1,"value":"0.0"}]}]}]} """
         let mockHttpReq =
             Mock<IHttpSonarConnector>()
                 .Setup(fun x -> <@ x.HttpSonarGetRequest(any(), url0) @>).Returns(DifferencialService.PeriodsResponse.GetSample().JsonValue.ToString())
@@ -78,7 +78,7 @@ type DifferentialServiceTest() =
 
         let resource = new Resource( Key = "projectKey", IdString = "id")
         let resources = DifferencialService.GetCoverageReportOnNewCodeOnLeak(conf, resource, mockHttpReq.Create(), (new CancellationTokenSource()).Token, mockNotMan.Create())
-        Assert.That(resources.Count, Is.EqualTo(2))
+        Assert.That(resources.Count, Is.EqualTo(1))
         let covme = resources.["Project:ComponentBla:Project:ComponentBla:9AC47FE5-B1C8-416A-BFB4-632B7171E031:UndoRedoBlaModel.cs"]
         Assert.That(covme.Id, Is.EqualTo("AVEzWO92k3Oz8Oa46je4"))
         Assert.That(covme.resource.Lines.Count, Is.EqualTo(1))
