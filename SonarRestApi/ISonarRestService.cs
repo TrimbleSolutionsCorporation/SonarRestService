@@ -1,11 +1,10 @@
 ﻿namespace SonarRestService
 {
     using System;
-    using System.Collections;
     using System.Collections.Generic;
-    using System.Net;
     using System.Threading;
     using System.Threading.Tasks;
+
     using Types;
 
     /// <summary>
@@ -91,68 +90,68 @@
         /// <returns></returns>
         string ProvisionProject(ISonarConfiguration config, string key, string name, string branch);
 
-		/// <summary>
-		/// Comments the on issues.
-		/// </summary>
-		/// <param name="newConf">The new conf.</param>
-		/// <param name="issues">The issues.</param>
-		/// <param name="comment">The comment.</param>
-		/// <returns></returns>
-		Task<bool> CommentOnIssues(ISonarConfiguration newConf, IEnumerable<Issue> issues, string comment, IRestLogger logger, CancellationToken token);
+        /// <summary>
+        /// Comments the on issues.
+        /// </summary>
+        /// <param name="newConf">The new conf.</param>
+        /// <param name="issues">The issues.</param>
+        /// <param name="comment">The comment.</param>
+        /// <returns></returns>
+        Task<bool> CommentOnIssues(ISonarConfiguration newConf, IEnumerable<Issue> issues, string comment, IRestLogger logger, CancellationToken token);
 
-		/// <summary>
-		/// Res the open issues.
-		/// </summary>
-		/// <param name="Conf">The conf.</param>
-		/// <param name="issues">The issues.</param>
-		/// <param name="comment">The comment.</param>
-		/// <returns></returns>
-		Task<bool> ReOpenIssues(ISonarConfiguration Conf, List<Issue> issues, string comment, IRestLogger logger, CancellationToken token);
+        /// <summary>
+        /// Res the open issues.
+        /// </summary>
+        /// <param name="Conf">The conf.</param>
+        /// <param name="issues">The issues.</param>
+        /// <param name="comment">The comment.</param>
+        /// <returns></returns>
+        Task<bool> ReOpenIssues(ISonarConfiguration Conf, List<Issue> issues, string comment, IRestLogger logger, CancellationToken token);
 
-		/// <summary>
-		/// Confirms the issues.
-		/// </summary>
-		/// <param name="newConf">The new conf.</param>
-		/// <param name="issues">The issues.</param>
-		/// <param name="comment">The comment.</param>
-		/// <returns></returns>
-		Task<bool> ConfirmIssues(ISonarConfiguration newConf, IEnumerable<Issue> issues, string comment, IRestLogger logger, CancellationToken token);
+        /// <summary>
+        /// Confirms the issues.
+        /// </summary>
+        /// <param name="newConf">The new conf.</param>
+        /// <param name="issues">The issues.</param>
+        /// <param name="comment">The comment.</param>
+        /// <returns></returns>
+        Task<bool> ConfirmIssues(ISonarConfiguration newConf, IEnumerable<Issue> issues, string comment, IRestLogger logger, CancellationToken token);
 
-		/// <summary>
-		/// do not confirm issues.
-		/// </summary>
-		/// <param name="newConf">The new conf.</param>
-		/// <param name="issues">The issues.</param>
-		/// <param name="comment">The comment.</param>
-		/// <returns></returns>
-		Task<bool> UnConfirmIssues(ISonarConfiguration newConf, IEnumerable<Issue> issues, string comment, IRestLogger logger, CancellationToken token);
+        /// <summary>
+        /// do not confirm issues.
+        /// </summary>
+        /// <param name="newConf">The new conf.</param>
+        /// <param name="issues">The issues.</param>
+        /// <param name="comment">The comment.</param>
+        /// <returns></returns>
+        Task<bool> UnConfirmIssues(ISonarConfiguration newConf, IEnumerable<Issue> issues, string comment, IRestLogger logger, CancellationToken token);
 
-		/// <summary>
-		/// Marks the issues as false positive.
-		/// </summary>
-		/// <param name="newConf">The new conf.</param>
-		/// <param name="issues">The issues.</param>
-		/// <param name="comment">The comment.</param>
-		/// <returns></returns>
-		Task<bool> MarkIssuesAsFalsePositive(ISonarConfiguration newConf, IEnumerable<Issue> issues, string comment, IRestLogger logger, CancellationToken token);
+        /// <summary>
+        /// Marks the issues as false positive.
+        /// </summary>
+        /// <param name="newConf">The new conf.</param>
+        /// <param name="issues">The issues.</param>
+        /// <param name="comment">The comment.</param>
+        /// <returns></returns>
+        Task<bool> MarkIssuesAsFalsePositive(ISonarConfiguration newConf, IEnumerable<Issue> issues, string comment, IRestLogger logger, CancellationToken token);
 
-		/// <summary>
-		/// Marks the issues as false positive.
-		/// </summary>
-		/// <param name="newConf">The new conf.</param>
-		/// <param name="issues">The issues.</param>
-		/// <param name="comment">The comment.</param>
-		/// <returns></returns>
-		Task<bool> MarkIssuesAsWontFix(ISonarConfiguration newConf, IEnumerable<Issue> issues, string comment, IRestLogger logger, CancellationToken token);
+        /// <summary>
+        /// Marks the issues as false positive.
+        /// </summary>
+        /// <param name="newConf">The new conf.</param>
+        /// <param name="issues">The issues.</param>
+        /// <param name="comment">The comment.</param>
+        /// <returns></returns>
+        Task<bool> MarkIssuesAsWontFix(ISonarConfiguration newConf, IEnumerable<Issue> issues, string comment, IRestLogger logger, CancellationToken token);
 
-		/// <summary>
-		/// resolve issues
-		/// </summary>
-		/// <param name="newConf"></param>
-		/// <param name="issues"></param>
-		/// <param name="comment"></param>
-		/// <returns></returns>
-		Task<bool> ResolveIssues(ISonarConfiguration newConf, IEnumerable<Issue> issues, string comment, IRestLogger logger, CancellationToken token);
+        /// <summary>
+        /// resolve issues
+        /// </summary>
+        /// <param name="newConf"></param>
+        /// <param name="issues"></param>
+        /// <param name="comment"></param>
+        /// <returns></returns>
+        Task<bool> ResolveIssues(ISonarConfiguration newConf, IEnumerable<Issue> issues, string comment, IRestLogger logger, CancellationToken token);
 
         /// <summary>
         /// Assigns the issues to user.
@@ -164,37 +163,37 @@
         /// <returns></returns>
         Task<bool> AssignIssuesToUser(ISonarConfiguration newConf, IEnumerable<Issue> issues, User user, string comment, IRestLogger logger, CancellationToken token);
 
-		/// <summary>
-		/// Plans the issues.
-		/// </summary>
-		/// <param name="newConf">The new conf.</param>
-		/// <param name="issues">The issues.</param>
-		/// <param name="planId">The plan identifier.</param>
-		/// <returns>status code</returns>
-		Task<bool> PlanIssues(ISonarConfiguration newConf, IEnumerable<Issue> issues, string planId, IRestLogger logger, CancellationToken token);
+        /// <summary>
+        /// Plans the issues.
+        /// </summary>
+        /// <param name="newConf">The new conf.</param>
+        /// <param name="issues">The issues.</param>
+        /// <param name="planId">The plan identifier.</param>
+        /// <returns>status code</returns>
+        Task<bool> PlanIssues(ISonarConfiguration newConf, IEnumerable<Issue> issues, string planId, IRestLogger logger, CancellationToken token);
 
-		/// <summary>
-		/// unplan issues.
-		/// </summary>
-		/// <param name="newConf">The new conf.</param>
-		/// <param name="issues">The issues.</param>
-		/// <returns>status of operation</returns>
-		Task<bool> UnPlanIssues(ISonarConfiguration newConf, IEnumerable<Issue> issues, IRestLogger logger, CancellationToken token);
+        /// <summary>
+        /// unplan issues.
+        /// </summary>
+        /// <param name="newConf">The new conf.</param>
+        /// <param name="issues">The issues.</param>
+        /// <returns>status of operation</returns>
+        Task<bool> UnPlanIssues(ISonarConfiguration newConf, IEnumerable<Issue> issues, IRestLogger logger, CancellationToken token);
 
-		/// <summary>
-		/// Gets the user list.
-		/// </summary>
-		/// <param name="conf">The conf.</param>
-		/// <returns>users</returns>
-		Task<List<User>> GetUserList(ISonarConfiguration conf);
+        /// <summary>
+        /// Gets the user list.
+        /// </summary>
+        /// <param name="conf">The conf.</param>
+        /// <returns>users</returns>
+        Task<List<User>> GetUserList(ISonarConfiguration conf);
 
-		/// <summary>
-		/// Create a teams from a team list file
-		/// </summary>
-		/// <param name="conf"></param>
-		/// <param name="availableUsers"></param>
-		/// <returns></returns>
-		Task<List<Team>> GetTeams(IEnumerable<User> availableUsers, string userListFile);
+        /// <summary>
+        /// Create a teams from a team list file
+        /// </summary>
+        /// <param name="conf"></param>
+        /// <param name="availableUsers"></param>
+        /// <returns></returns>
+        Task<List<Team>> GetTeams(IEnumerable<User> availableUsers, string userListFile);
 
         /// <summary>
         /// Gets teams files
@@ -305,14 +304,14 @@
         /// <returns>status of the operation</returns>
         string SetSetting(ISonarConfiguration props, Setting setting, Resource project = null);
 
-		/// <summary>
-		/// Creates the version.
-		/// </summary>
-		/// <param name="props">The props.</param>
-		/// <param name="project">The project.</param>
-		/// <param name="version">The version.</param>
-		/// <returns></returns>
-		Task<string> CreateVersion(ISonarConfiguration props, Resource project, string version, DateTime date, CancellationToken token, IRestLogger logger);
+        /// <summary>
+        /// Creates the version.
+        /// </summary>
+        /// <param name="props">The props.</param>
+        /// <param name="project">The project.</param>
+        /// <param name="version">The version.</param>
+        /// <returns></returns>
+        Task<string> CreateVersion(ISonarConfiguration props, Resource project, string version, DateTime date, CancellationToken token, IRestLogger logger);
 
         /// <summary>
         /// Gets the coverage report on new code on leak.
@@ -322,6 +321,7 @@
         /// <returns></returns>
         Task<Dictionary<string, CoverageDifferencial>> GetCoverageReportOnNewCodeOnLeak(ISonarConfiguration props, Resource project, CancellationToken token, IRestLogger logger);
 
+        [Obsolete("Use GetCoverageReportOnNewCodeOnLeak")]
         /// <summary>
         /// Gets the coverage report.
         /// </summary>
@@ -329,6 +329,14 @@
         /// <param name="project">The project.</param>
         /// <returns></returns>
         Task<Dictionary<string, CoverageReport>> GetCoverageReport(ISonarConfiguration props, Resource project, CancellationToken token, IRestLogger logger);
+
+        /// <summary>
+        /// Gets the summary project report., includes new_coverage,ncloc,coverage,new_lines,ncloc_language_distribution,violations,new_violations,new_technical_debt,cognitive_complexity,complexity,lines,sqale_index
+        /// </summary>
+        /// <param name="props">The props.</param>
+        /// <param name="project">The project.</param>
+        /// <returns></returns>
+        Task<Dictionary<string, ProjectSummaryReport>> GetSummaryProjectReport(ISonarConfiguration props, Resource project, CancellationToken token, IRestLogger logger);
 
         /// <summary>
         /// Updates the property.

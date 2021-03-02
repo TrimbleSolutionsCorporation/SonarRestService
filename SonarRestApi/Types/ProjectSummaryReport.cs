@@ -1,12 +1,9 @@
 ﻿namespace SonarRestService.Types
 {
-    using System;
-
-    [Obsolete("Use Project Summary Report")]
     /// <summary>
-    /// CoverageReport helper
+    /// Summary report for project
     /// </summary>
-    public class CoverageReport
+    public class ProjectSummaryReport
     {
         /// <summary>
         /// Gets or sets the identifier.
@@ -15,6 +12,49 @@
         /// The identifier.
         /// </value>
         public string Id { get; set; }
+
+        /// <summary>
+        /// Gets or sets the resource.
+        /// </summary>
+        /// <value>
+        /// The resource.
+        /// </value>
+        public Resource Resource { get; set; }
+
+        /// <summary>
+        /// Gets or sets all lines
+        /// </summary>
+        public long Lines { get; set; }
+
+        /// <summary>
+        /// Gets or sets issues
+        /// </summary>
+        public long Issues { get; set; }
+
+        /// <summary>
+        /// Gets or sets new issues
+        /// </summary>
+        public long NewIssues { get; set; }
+
+        /// <summary>
+        /// Gets or sets new technical debt
+        /// </summary>
+        public long NewTechnicalDebt { get; set; }
+
+        /// <summary>
+        /// Gets or sets technical debt
+        /// </summary>
+        public long TechnicalDebt { get; set; }
+
+        /// <summary>
+        /// Gets or sets cognitive complexity
+        /// </summary>
+        public long CognitiveComplexity { get; set; }
+
+        /// <summary>
+        /// Gets or sets cyclomatic complexity
+        /// </summary>
+        public long CyclomaticComplexity { get; set; }
 
         /// <summary>
         /// Gets or sets the language distribuition
