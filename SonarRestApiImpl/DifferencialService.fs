@@ -77,6 +77,21 @@ let GetCoverageReportOnNewCodeOnLeak(conf : ISonarConfiguration, projectIn : Res
 
 let GetSummaryProjectReport(conf : ISonarConfiguration, projectIn : Resource, httpconnector : IHttpSonarConnector) =
     let coverageReport = new System.Collections.Generic.Dictionary<string, ProjectSummaryReport>()
+
+    let GetPeriodValueForMeasure(comp:CoverageReportType.Component, metric:string) =
+        let data = comp.Measures |> Seq.tryFind (fun meas -> meas.Metric = metric)
+        if data.IsSome then
+            Convert.ToInt64(data.Value.Periods.[0].Value)
+        else
+            int64(0)
+
+    let GetValueForMeasure(comp:CoverageReportType.Component, metric:string) =
+        let data = comp.Measures |> Seq.tryFind (fun meas -> meas.Metric = metric)
+        if data.IsSome then
+            Convert.ToInt64(data.Value.Value.Number.Value)
+        else
+            int64(0)
+
     let AddComponentToReport(comp:CoverageReportType.Component) = 
         let resource = new Resource()
         resource.Key <- comp.Key
@@ -99,41 +114,23 @@ let GetSummaryProjectReport(conf : ISonarConfiguration, projectIn : Resource, ht
         if newcond.IsSome then
             summaryReport.Coverage <- Convert.ToDecimal(newcond.Value.Value.Number.Value)
 
-        let newlines = comp.Measures |> Seq.tryFind (fun meas -> meas.Metric = "new_lines")
-        if newlines.IsSome then
-            summaryReport.NewLines <- Convert.ToInt64(newlines.Value.Periods.[0].Value)
-
-        let lines = comp.Measures |> Seq.tryFind (fun meas -> meas.Metric = "lines")
-        if lines.IsSome then
-            summaryReport.Lines <- Convert.ToInt64(lines.Value.Value.Number.Value)
-
-        let linesOfCode = comp.Measures |> Seq.tryFind (fun meas -> meas.Metric = "ncloc")
-        if linesOfCode.IsSome then
-            summaryReport.LinesOfCode <- Convert.ToInt64(linesOfCode.Value.Value.Number.Value)
-
-        let issues = comp.Measures |> Seq.tryFind (fun meas -> meas.Metric = "violations")
-        if issues.IsSome then
-            summaryReport.Issues <- Convert.ToInt64(issues.Value.Value.Number.Value)
-
-        let newIssues = comp.Measures |> Seq.tryFind (fun meas -> meas.Metric = "new_violations")
-        if newIssues.IsSome then
-            summaryReport.NewIssues <- Convert.ToInt64(newIssues.Value.Periods.[0].Value)
-
-        let newTechDebt = comp.Measures |> Seq.tryFind (fun meas -> meas.Metric = "new_technical_debt")
-        if newTechDebt.IsSome then
-            summaryReport.NewTechnicalDebt <- Convert.ToInt64(newTechDebt.Value.Periods.[0].Value)
-
-        let techDebt = comp.Measures |> Seq.tryFind (fun meas -> meas.Metric = "sqale_index")
-        if techDebt.IsSome then
-            summaryReport.TechnicalDebt <- Convert.ToInt64(techDebt.Value.Value.Number.Value)
-
-        let cognitiveComplexity = comp.Measures |> Seq.tryFind (fun meas -> meas.Metric = "cognitive_complexity")
-        if cognitiveComplexity.IsSome then
-            summaryReport.CognitiveComplexity <- Convert.ToInt64(cognitiveComplexity.Value.Value.Number.Value)
-
-        let cyclomaticComplexity = comp.Measures |> Seq.tryFind (fun meas -> meas.Metric = "complexity")
-        if cyclomaticComplexity.IsSome then
-            summaryReport.CyclomaticComplexity <- Convert.ToInt64(cyclomaticComplexity.Value.Value.Number.Value)
+        summaryReport.NewLines <- GetPeriodValueForMeasure(comp, "new_lines")
+        summaryReport.Lines <- GetValueForMeasure(comp, "lines")
+        summaryReport.LinesOfCode <- GetValueForMeasure(comp, "ncloc")        
+        summaryReport.NewUncoveredConditions <- GetPeriodValueForMeasure(comp, "new_uncovered_conditions")
+        summaryReport.UncoveredConditions <- GetValueForMeasure(comp, "uncovered_conditions")
+        summaryReport.NewUncoveredLines <- GetPeriodValueForMeasure(comp, "new_uncovered_lines")
+        summaryReport.UncoveredLines <- GetValueForMeasure(comp, "uncovered_lines")
+        summaryReport.NewConditionsToCover <- GetPeriodValueForMeasure(comp, "new_conditions_to_cover")
+        summaryReport.ConditionsToCover <- GetValueForMeasure(comp, "conditions_to_cover")
+        summaryReport.NewLinesToCover <- GetPeriodValueForMeasure(comp, "new_lines_to_cover")
+        summaryReport.LinesToCover <- GetValueForMeasure(comp, "lines_to_cover")
+        summaryReport.Issues <- GetValueForMeasure(comp, "violations")
+        summaryReport.NewIssues <- GetPeriodValueForMeasure(comp, "new_violations")
+        summaryReport.NewTechnicalDebt <- GetPeriodValueForMeasure(comp, "new_technical_debt")
+        summaryReport.TechnicalDebt <- GetValueForMeasure(comp, "sqale_index")
+        summaryReport.CognitiveComplexity <- GetValueForMeasure(comp, "cognitive_complexity")
+        summaryReport.CyclomaticComplexity <- GetValueForMeasure(comp, "complexity")
 
         coverageReport.Add(comp.Key, summaryReport)
 
@@ -143,7 +140,7 @@ let GetSummaryProjectReport(conf : ISonarConfiguration, projectIn : Resource, ht
         else
             sprintf "component=%s" projectIn.Key
 
-    let url = sprintf "/api/measures/component?%s&metricKeys=new_coverage,ncloc,coverage,new_lines,ncloc_language_distribution,violations,new_violations,new_technical_debt,cognitive_complexity,complexity,sqale_index,lines" compElement
+    let url = sprintf "/api/measures/component?%s&metricKeys=conditions_to_cover,new_conditions_to_cover,new_lines_to_cover,lines_to_cover,uncovered_lines,new_uncovered_lines,new_uncovered_conditions,uncovered_conditions,new_coverage,ncloc,coverage,new_lines,ncloc_language_distribution,violations,new_violations,new_technical_debt,cognitive_complexity,complexity,sqale_index,lines" compElement
 
     let responsecontent = httpconnector.HttpSonarGetRequest(conf, url)
     let data = CoverageReportType.Parse(responsecontent)

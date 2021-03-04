@@ -37,6 +37,46 @@
         public long NewIssues { get; set; }
 
         /// <summary>
+        /// Gets or sets  new uncovered conditions
+        /// </summary>
+        public long NewUncoveredConditions { get; set; }
+
+        /// <summary>
+        /// Gets or sets  uncovered conditions
+        /// </summary>
+        public long UncoveredConditions { get; set; }
+
+        /// <summary>
+        /// Gets or sets  new uncovered lines
+        /// </summary>
+        public long NewUncoveredLines { get; set; }
+
+        /// <summary>
+        /// Gets or sets  uncovered lines
+        /// </summary>
+        public long UncoveredLines { get; set; }
+
+        /// <summary>
+        /// Gets or sets  new conditions to cover
+        /// </summary>
+        public long NewConditionsToCover { get; set; }
+
+        /// <summary>
+        /// Gets or sets  conditions to cover
+        /// </summary>
+        public long ConditionsToCover { get; set; }
+
+        /// <summary>
+        /// Gets or sets  new lines to cover
+        /// </summary>
+        public long NewLinesToCover { get; set; }
+
+        /// <summary>
+        /// Gets or sets  lines to cover
+        /// </summary>
+        public long LinesToCover { get; set; }
+
+        /// <summary>
         /// Gets or sets new technical debt
         /// </summary>
         public long NewTechnicalDebt { get; set; }
