@@ -52,8 +52,14 @@ let GetCoverageReportOnNewCodeOnLeak(conf : ISonarConfiguration, projectIn : Res
         if resource.Lines.Count > 0 then
             coverageLeak.Add(comp.Key, covmeas)
 
-    let rec GetComponents(page:int, date:DateTime) =        
-        let url = sprintf "/api/measures/component_tree?asc=true&ps=100&metricSortFilter=withMeasuresOnly&s=metricPeriod,name&metricSort=new_coverage&metricPeriodSort=1&baseComponentKey=%s&metricKeys=new_coverage,new_uncovered_lines,new_uncovered_conditions,new_conditions_to_cover,new_lines_to_cover&strategy=leaves&p=%i" projectIn.Key page
+    let rec GetComponents(page:int, date:DateTime) =
+
+        let url =
+            if conf.SonarVersion < 7.6 then
+                sprintf "/api/measures/component_tree?asc=true&ps=100&metricSortFilter=withMeasuresOnly&s=metricPeriod,name&metricSort=new_coverage&metricPeriodSort=1&baseComponentKey=%s&metricKeys=new_coverage,new_uncovered_lines,new_uncovered_conditions,new_conditions_to_cover,new_lines_to_cover&strategy=leaves&p=%i" projectIn.Key page
+            else
+                sprintf "/api/measures/component_tree?asc=true&ps=100&metricSortFilter=withMeasuresOnly&s=metricPeriod,name&metricSort=new_coverage&metricPeriodSort=1&component=%s&metricKeys=new_coverage,new_uncovered_lines,new_uncovered_conditions,new_conditions_to_cover,new_lines_to_cover&strategy=leaves&p=%i" projectIn.Key page
+
         logger.ReportMessage("Progress: " + url)
         let responsecontent = httpconnector.HttpSonarGetRequest(conf, url)
         let data = ComponentTreeSearch.Parse(responsecontent)

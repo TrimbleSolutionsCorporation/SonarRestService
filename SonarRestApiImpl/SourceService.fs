@@ -41,7 +41,12 @@ let UpdateSourceLinesInResource(conf : ISonarConfiguration, resource : Resource,
                 if linedata.ScmDate.IsSome then resource.Lines.[linedata.Line].ScmDate <-linedata.ScmDate.Value.DateTime
                 if linedata.ScmRevision.IsSome then resource.Lines.[linedata.Line].ScmRevision <-linedata.ScmRevision.Value
 
-        let url = sprintf "/api/sources/lines?uuid=%s&from=%i&to=%i" resource.IdString from into
+        let url =
+            if conf.SonarVersion < 8.8 then
+                sprintf "/api/sources/lines?uuid=%s&from=%i&to=%i" resource.IdString from into
+            else
+                sprintf "/api/sources/lines?key=%s&from=%i&to=%i" resource.Key from into
+                
         let responsecontent = httpconnector.HttpSonarGetRequest(conf, url)
         let lines = Lines.Parse(responsecontent)
         lines.Sources |> Seq.iter (fun line -> CreateLineInResource(line))
@@ -93,7 +98,12 @@ let GetLinesFromDateInResource(conf : ISonarConfiguration, resource : Resource, 
                 if resource.Lines.[linedata.Line].ScmDate < date || not(resource.Lines.[linedata.Line].IsExecutableLine) then
                     resource.Lines.Remove(linedata.Line) |> ignore
 
-        let url = sprintf "/api/sources/lines?uuid=%s&from=%i&to=%i" resource.IdString from into
+        let url = 
+            if conf.SonarVersion < 8.8 then
+                sprintf "/api/sources/lines?uuid=%s&from=%i&to=%i" resource.IdString from into
+            else
+                sprintf "/api/sources/lines?key=%s&from=%i&to=%i" resource.Key from into
+
         let responsecontent = httpconnector.HttpSonarGetRequest(conf, url)
         let lines = Lines.Parse(responsecontent)
         lines.Sources |> Seq.iter (fun line -> CreateLineInResource(line))
