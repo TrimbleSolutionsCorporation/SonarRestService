@@ -1020,8 +1020,13 @@ type SonarService(httpconnector : IHttpSonarConnector) =
             profiles
 
         member this.GetAvailableProfiles(conf : ISonarConfiguration) = 
+            
             let profiles = new System.Collections.Generic.List<Profile>()
-            let reply = httpconnector.HttpSonarGetRequest(conf, "/api/profiles/list")
+            let reply =
+                if conf.SonarVersion < 8.0 then
+                   httpconnector.HttpSonarGetRequest(conf, "/api/profiles/list")
+                 else
+                   httpconnector.HttpSonarGetRequest(conf, "/api/qualityprofiles/search")
             let data = JsonQualityProfiles.Parse(reply)
             for profile in data do
                 let newprofile = new Profile(this :> ISonarRestService, conf)
@@ -1197,7 +1202,12 @@ type SonarService(httpconnector : IHttpSonarConnector) =
 
                 profiles
             else
-                let url = "/api/profiles/list?project=" + resource
+                let url =
+                    if conf.SonarVersion < 8.0 then
+                        "/api/profiles/list?project=" + resource
+                    else
+                        "/api/qualityprofiles/search?project=" + resource
+               
                 GetQualityProfilesFromContent(httpconnector.HttpSonarGetRequest(conf, url), conf, this :> ISonarRestService)
                         
         member this.GetQualityProfilesForProject(conf : ISonarConfiguration, project : Resource, language : string) = 
@@ -1210,7 +1220,12 @@ type SonarService(httpconnector : IHttpSonarConnector) =
                     else
                         project.Key
 
-            let url = "/api/profiles/list?project=" + resource + "&language=" + HttpUtility.UrlEncode(language)
+            let url =
+                if conf.SonarVersion < 8.0 then
+                    "/api/profiles/list?project=" + resource + "&language=" + HttpUtility.UrlEncode(language)
+                else
+                    "/api/qualityprofiles/search?project=" + resource + "&language=" + HttpUtility.UrlEncode(language)
+
             GetQualityProfilesFromContent(httpconnector.HttpSonarGetRequest(conf, url), conf, this :> ISonarRestService)
 
         member this.GetProjectsList(conf : ISonarConfiguration) = 
