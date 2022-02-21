@@ -366,6 +366,59 @@ type JsonQualityProfiles = JsonProvider<""" [
   }
 ] """>
 
+type JsonQualityProfiles80 = JsonProvider<"""
+  {
+     "profiles":[
+        {
+           "key":"xml-sonar-way-00258",
+           "name":"Sonar way (outdated copy)",
+           "language":"xml",
+           "languageName":"XML",
+           "isInherited":false,
+           "isDefault":true,
+           "activeRuleCount":6,
+           "activeDeprecatedRuleCount":0,
+           "rulesUpdatedAt":"2022-02-13T09:02:30+0000",
+           "lastUsed":"2022-02-18T15:37:33+0200",
+           "userUpdatedAt":"2022-02-13T11:02:30+0200",
+           "isBuiltIn":false,
+           "actions":{
+              "edit":true,
+              "setAsDefault":false,
+              "copy":true,
+              "associateProjects":false,
+              "delete":false
+           }
+        },
+        {
+           "key":"AV5TE3CkFrY769DgAO8u",
+           "name":"TCD",
+           "language":"xml",
+           "languageName":"XML",
+           "isInherited":false,
+           "isDefault":false,
+           "activeRuleCount":6,
+           "activeDeprecatedRuleCount":0,
+           "projectCount":1,
+           "rulesUpdatedAt":"2022-02-13T09:02:31+0000",
+           "lastUsed":"2022-02-17T14:35:24+0200",
+           "userUpdatedAt":"2022-02-13T11:02:31+0200",
+           "isBuiltIn":false,
+           "actions":{
+              "edit":true,
+              "setAsDefault":true,
+              "copy":true,
+              "associateProjects":true,
+              "delete":true
+           }
+        }
+     ],
+     "actions":{
+        "create":true
+     }
+  }
+ """>
+
 type JsonProfileAfter44 = JsonProvider<""" [
   {
     "name": "Sonar way",
