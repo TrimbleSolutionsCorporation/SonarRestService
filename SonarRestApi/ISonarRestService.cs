@@ -2,6 +2,7 @@
 {
     using System;
     using System.Collections.Generic;
+    using System.Net;
     using System.Threading;
     using System.Threading.Tasks;
 
@@ -210,6 +211,20 @@
         /// <param name="conf">The conf.</param>
         /// <returns>users</returns>
         Task<List<User>> GetUserList(ISonarConfiguration conf);
+
+        /// <summary>
+        /// Gets the user list.
+        /// </summary>
+        /// <param name="conf">The conf.</param>
+        /// <returns>users</returns>
+        Task<HttpStatusCode> UpdateIdentityProvider(ISonarConfiguration conf, System.Collections.Generic.Dictionary<string, string> data);
+
+        /// <summary>
+        /// Gets the user list.
+        /// </summary>
+        /// <param name="conf">The conf.</param>
+        /// <returns>users</returns>
+        Task<HttpStatusCode> UpdateUserData(ISonarConfiguration conf, System.Collections.Generic.Dictionary<string, string> data);
 
         /// <summary>
         /// Create a teams from a team list file

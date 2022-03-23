@@ -119,6 +119,16 @@ let GetTeams(users : System.Collections.Generic.IEnumerable<User>, teamsFile:str
         |> Seq.iter (fun team -> HandleTeam(team))
     teams
 
+let UpdateUserData(newConf : ISonarConfiguration, httpconnector : IHttpSonarConnector, data:System.Collections.Generic.Dictionary<string, string>) =
+    let url = "api/users/update"
+    let responsecontent = httpconnector.HttpSonarPostRequestDic(newConf, url, data)
+    responsecontent.StatusCode
+
+let UpdateIdentityProvider(newConf : ISonarConfiguration, httpconnector : IHttpSonarConnector, data:System.Collections.Generic.Dictionary<string, string>) =
+    let url = "api/users/update_identity_provider"
+    let responsecontent = httpconnector.HttpSonarPostRequestDic(newConf, url, data)
+    responsecontent.StatusCode
+    
 let GetUserList(newConf : ISonarConfiguration, httpconnector : IHttpSonarConnector) =
     let url = "/api/users/search?ps=500"           
     try

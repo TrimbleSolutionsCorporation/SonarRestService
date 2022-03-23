@@ -65,13 +65,23 @@ type UserServiceTests() =
         Assert.That(suser.Team, Is.EqualTo("Sold Team"))
 
 
-    [<Test>]
-    member test.``Gets empty teams if no users are found ddfd`` () =
+    //[<Test>]
+    member test.``Migrate Users to saml`` () =
         let mockHttpReq =
             Mock<IHttpSonarConnector>()
                 .Create()
+
+        let conf = ConnectionConfiguration("https://sonar", "", "", 1.0)
         let service = SonarService(JsonSonarConnector())
-        let users = (service :> ISonarRestService).GetUserList(ConnectionConfiguration("http://sonar", "jocs", "pdJ722NUjco", 1.0)).GetAwaiter().GetResult()
-        
-        let teams = (service :> ISonarRestService).GetTeams(users, @"e:\teams.json").GetAwaiter().GetResult()
-        ()
+        let users = (service :> ISonarRestService).GetUserList(conf).GetAwaiter().GetResult()
+
+        let MigrateUser(user:User) =
+            let parmas = new System.Collections.Generic.Dictionary<string, string>()
+
+            parmas.Add("login", user.Login)
+            parmas.Add("newExternalIdentity", user.Email)
+            parmas.Add("newExternalProvider", "saml")
+            (service :> ISonarRestService).UpdateIdentityProvider(conf, parmas).Result |> ignore
+            ()
+
+        users |> Seq.iter (fun user -> MigrateUser(user))
