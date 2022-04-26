@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFrameworks>net472</TargetFrameworks>
+    <TargetFrameworks>net48</TargetFrameworks>
     <OutputPath>..\BuildDrop\Test</OutputPath>
   </PropertyGroup>
 
@@ -107,7 +107,6 @@
 
   <ItemGroup>
     <PackageReference Include="Foq" Version="1.8.0" />
-    <PackageReference Include="FSharp.Data.Signed" Version="3.1.2" />
     <PackageReference Include="NUnit" Version="3.11.0" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="15.9.0" />
     <PackageReference Include="NUnit3TestAdapter" Version="3.10.0" />
@@ -116,10 +115,6 @@
   <ItemGroup>
     <ProjectReference Include="..\SonarRestApiImpl\SonarRestApiImpl.fsproj" />
     <ProjectReference Include="..\SonarRestApi\SonarRestApi.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <PackageReference Update="FSharp.Core" Version="4.5.2" />
   </ItemGroup>
 
 </Project>

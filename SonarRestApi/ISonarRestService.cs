@@ -216,6 +216,7 @@
         /// Gets the user list.
         /// </summary>
         /// <param name="conf">The conf.</param>
+        /// <param name="data">user data</param>
         /// <returns>users</returns>
         Task<HttpStatusCode> UpdateIdentityProvider(ISonarConfiguration conf, System.Collections.Generic.Dictionary<string, string> data);
 
@@ -223,6 +224,7 @@
         /// Gets the user list.
         /// </summary>
         /// <param name="conf">The conf.</param>
+        /// <param name="data">user data</param>
         /// <returns>users</returns>
         Task<HttpStatusCode> UpdateUserData(ISonarConfiguration conf, System.Collections.Generic.Dictionary<string, string> data);
 
@@ -366,7 +368,7 @@
         /// <returns>coverage differential</returns>
         Task<Dictionary<string, CoverageDifferencial>> GetCoverageReportOnNewCodeOnLeak(ISonarConfiguration props, Resource project, CancellationToken token, IRestLogger logger);
 
-        [Obsolete("Use GetCoverageReportOnNewCodeOnLeak")]
+
         /// <summary>
         /// Gets the coverage report.
         /// </summary>
@@ -375,6 +377,7 @@
         /// <param name="token">The token.</param>
         /// <param name="logger">logger</param>
         /// <returns>coverage report, obsolete</returns>
+        [Obsolete("Use GetCoverageReportOnNewCodeOnLeak")]
         Task<Dictionary<string, CoverageReport>> GetCoverageReport(ISonarConfiguration props, Resource project, CancellationToken token, IRestLogger logger);
 
         /// <summary>
@@ -429,20 +432,68 @@
         /// <param name="newRule">new rule</param>
         void UpdateRuleData(ISonarConfiguration conf, Rule newRule);
 
+        /// <summary>
+        /// Gets quality profiles for project
+        /// </summary>
+        /// <param name="conf">sonar conf</param>
+        /// <param name="project">project</param>
+        /// <returns>Profiles</returns>
         List<Profile> GetQualityProfilesForProject(ISonarConfiguration conf, Resource project);
 
+        /// <summary>
+        /// gets profiles for project by language
+        /// </summary>
+        /// <param name="conf">conf</param>
+        /// <param name="project">project key</param>
+        /// <param name="language">language</param>
+        /// <returns>Profiles</returns>
         List<Profile> GetQualityProfilesForProject(ISonarConfiguration conf, Resource project, string language);
 
+        /// <summary>
+        /// Gets all profiles
+        /// </summary>
+        /// <param name="conf">config</param>
+        /// <returns>Profiles</returns>
         List<Profile> GetAvailableProfiles(ISonarConfiguration conf);
 
+        /// <summary>
+        /// Gets a list of rules
+        /// </summary>
+        /// <param name="conf">conf</param>
+        /// <param name="languangeKey">lang</param>
+        /// <returns>rules</returns>
         List<Rule> GetRules(ISonarConfiguration conf, string languangeKey);
 
+        /// <summary>
+        /// Gets template rules
+        /// </summary>
+        /// <param name="conf">conf</param>
+        /// <param name="profile">profile</param>
         void GetTemplateRules(ISonarConfiguration conf, Profile profile);
 
+        /// <summary>
+        /// Update a rule
+        /// </summary>
+        /// <param name="conf">conf</param>
+        /// <param name="key">key</param>
+        /// <param name="optionalProps">props</param>
+        /// <returns>data</returns>
         List<string> UpdateRule(ISonarConfiguration conf, string key, Dictionary<string, string> optionalProps);
 
+        /// <summary>
+        /// Gets all tags
+        /// </summary>
+        /// <param name="conf">conf</param>
+        /// <returns>tags</returns>
         List<string> GetAllTags(ISonarConfiguration conf);
 
+        /// <summary>
+        /// Update tags
+        /// </summary>
+        /// <param name="conf">conf</param>
+        /// <param name="rule">rule</param>
+        /// <param name="tags">taf</param>
+        /// <returns>updated tags</returns>
         List<string> UpdateTags(ISonarConfiguration conf, Rule rule, List<string> tags);
 
         /// <summary>
@@ -455,19 +506,61 @@
         /// <returns>error message or empty if no error</returns>
         string ActivateRule(ISonarConfiguration conf, string ruleKey, string severity, string profilekey);
 
+        /// <summary>
+        /// Deletes a rule
+        /// </summary>
+        /// <param name="conf">conf</param>
+        /// <param name="rule">rule</param>
+        /// <returns></returns>
         List<string> DeleteRule(ISonarConfiguration conf, Rule rule);
 
+        /// <summary>
+        /// Disable rule
+        /// </summary>
+        /// <param name="conf">conf</param>
+        /// <param name="rule">rule</param>
+        /// <param name="profilekey">profile key</param>
+        /// <returns>rule</returns>
         List<string> DisableRule(ISonarConfiguration conf, Rule rule, string profilekey);
 
+        /// <summary>
+        /// Creates a new rule
+        /// </summary>
+        /// <param name="conf">conf</param>
+        /// <param name="rule">rule</param>
+        /// <param name="templateRule">template rule</param>
+        /// <returns>rules</returns>
         List<string> CreateRule(ISonarConfiguration conf, Rule rule, Rule templateRule);
 
-        // TODO: might be remove in the future
+        /// <summary>
+        /// Gets profiles using rules appp
+        /// </summary>
+        /// <param name="conf">conf</param>
+        /// <returns>profiles</returns>
         List<Profile> GetProfilesUsingRulesApp(ISonarConfiguration conf);
 
+        /// <summary>
+        /// Gets profiles using rules app
+        /// </summary>
+        /// <param name="conf">conf</param>
+        /// <param name="profile">profile</param>
+        /// <param name="active">active</param>
         void GetRulesForProfileUsingRulesApp(ISonarConfiguration conf, Profile profile, bool active);
 
+        /// <summary>
+        /// Get rules using profile app id
+        /// </summary>
+        /// <param name="conf">conf</param>
+        /// <param name="ruleKey">rule key</param>
+        /// <returns>rule</returns>
         Rule GetRuleUsingProfileAppId(ISonarConfiguration conf, string ruleKey);
 
+        /// <summary>
+        /// Gets duplicatations
+        /// </summary>
+        /// <param name="conf">conf</param>
+        /// <param name="resourceKey">resource key</param>
+        /// <returns>dup data</returns>
         List<DuplicationData> GetDuplicationsDataInResource(ISonarConfiguration conf, string resourceKey);
 
         /// <summary>
@@ -500,6 +593,7 @@
         /// <summary>
         /// Copies the profile.
         /// </summary>
+        /// <param name="conf">conf</param>
         /// <param name="id">The identifier.</param>
         /// <param name="newName">The new name.</param>
         /// <returns></returns>
@@ -543,7 +637,7 @@
         /// Gets the installed plugins.
         /// </summary>
         /// <param name="conf">The conf.</param>
-        /// <returns></returns>
+        /// <returns>plugins</returns>
         Dictionary<string, string> GetInstalledPlugins(ISonarConfiguration conf);
 
         /// <summary>
@@ -566,7 +660,9 @@
         /// <param name="conf">The conf.</param>
         /// <param name="key">The key.</param>
         /// <param name="line">The line.</param>
-        /// <returns></returns>
+        /// <param name="token">token</param>
+        /// <param name="logger">logger</param>
+        /// <returns>blame info</returns>
         Task<BlameLine> GetBlameLine(ISonarConfiguration conf, string key, int line, CancellationToken token, IRestLogger logger);
 
         /// <summary>
@@ -574,7 +670,9 @@
         /// </summary>
         /// <param name="conf">The conf.</param>
         /// <param name="project">The project.</param>
-        /// <returns></returns>
+        /// <param name="token">token</param>
+        /// <param name="logger">logger</param>
+        /// <returns>resources</returns>
         Task<List<Resource>> IndexServerResources(ISonarConfiguration conf, Resource project, CancellationToken token, IRestLogger logger);
     }
 }

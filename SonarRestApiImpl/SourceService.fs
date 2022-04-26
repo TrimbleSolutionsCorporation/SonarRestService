@@ -11,7 +11,7 @@ type Lines = JsonProvider<""" {"sources":[{"line":1,"lineHits": 1,"conditions": 
 
 let UpdateSourceLinesInResource(conf : ISonarConfiguration, resource : Resource, httpconnector : IHttpSonarConnector) =
     let rec GetLines(from:int, into:int) =
-        let CreateLineInResource(linedata:Lines.Sourcis) = 
+        let CreateLineInResource(linedata:Lines.Source) = 
             if not(resource.Lines.ContainsKey(linedata.Line)) then
                 let line = new Line()
                 line.Code <- linedata.Code
@@ -59,7 +59,7 @@ let UpdateSourceLinesInResource(conf : ISonarConfiguration, resource : Resource,
 
 let GetLinesFromDateInResource(conf : ISonarConfiguration, resource : Resource, httpconnector : IHttpSonarConnector, date : DateTime) =
     let rec GetLines(from:int, into:int) =
-        let CreateLineInResource(linedata:Lines.Sourcis) = 
+        let CreateLineInResource(linedata:Lines.Source) = 
             if not(resource.Lines.ContainsKey(linedata.Line)) then
                 let line = new Line()
                 line.Code <- linedata.Code

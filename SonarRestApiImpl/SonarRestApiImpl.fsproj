@@ -1,65 +1,56 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>
-    <Version>1.3.7</Version>
-    <TargetFrameworks>netstandard2.0;net472</TargetFrameworks>
-    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-    <SignAssembly>true</SignAssembly>
-    <AssemblyOriginatorKeyFile>..\AssemblyKey.snk</AssemblyOriginatorKeyFile>
-    <OutputPath>..\BuildDrop\</OutputPath>
-    <Authors>Jorge Costa</Authors>
-    <Company>Trimble Solutions Corporation</Company>
-    <AssemblyVersion>1.0.0.0</AssemblyVersion>
-    <FileVersion>1.0.0.0</FileVersion>
-    <repositoryUrl>https://github.com/TrimbleSolutionsCorporation/SonarRestService.git</repositoryUrl>
-    <Description>SonarQube rest api for .net languages</Description>
-    <Copyright>Copyright © 2020 Trimble Solutions Corporation.</Copyright>
-    <RepositoryType>git</RepositoryType>
-    <PackageTags>SonarQube Rest</PackageTags>
-    <PackageProjectUrl>https://github.com/TrimbleSolutionsCorporation/SonarRestService</PackageProjectUrl>
-    <PackageLicenseExpression></PackageLicenseExpression>
-    <PackageLicenseFile>LICENSE.txt</PackageLicenseFile>
-  </PropertyGroup>
+	<PropertyGroup>
+		<Version>1.3.8</Version>
+		<TargetFrameworks>netstandard2.0</TargetFrameworks>
+		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+		<SignAssembly>true</SignAssembly>
+		<AssemblyOriginatorKeyFile>..\AssemblyKey.snk</AssemblyOriginatorKeyFile>
+		<OutputPath>..\BuildDrop\</OutputPath>
+		<Authors>Jorge Costa</Authors>
+		<Company>Trimble Solutions Corporation</Company>
+		<AssemblyVersion>1.0.0.0</AssemblyVersion>
+		<FileVersion>1.0.0.0</FileVersion>
+		<repositoryUrl>https://github.com/TrimbleSolutionsCorporation/SonarRestService.git</repositoryUrl>
+		<Description>SonarQube rest api for .net languages</Description>
+		<Copyright>Copyright © 2020 Trimble Solutions Corporation.</Copyright>
+		<RepositoryType>git</RepositoryType>
+		<PackageTags>SonarQube Rest</PackageTags>
+		<PackageProjectUrl>https://github.com/TrimbleSolutionsCorporation/SonarRestService</PackageProjectUrl>
+		<PackageLicenseExpression></PackageLicenseExpression>
+		<PackageLicenseFile>LICENSE.txt</PackageLicenseFile>
+	</PropertyGroup>
 
-  <ItemGroup>
-    <Compile Include="TypeProviders.fs" />
-    <Compile Include="XmlTypeProviders.fs" />
-    <Compile Include="IHttpSonarConnector.fs" />
-    <Compile Include="SqaleDefaultModel.fs" />
-    <Compile Include="SourceService.fs" />
-    <Compile Include="AnalysisService.fs" />
-    <Compile Include="ComponentService.fs" />
-    <Compile Include="DifferencialService.fs" />
-    <Compile Include="HttpSonarConnector.fs" />
-    <Compile Include="IssuesService.fs" />
-    <Compile Include="MeasuresService.fs" />
-    <Compile Include="SettingsService.fs" />
-    <Compile Include="UsersService.fs" />
-    <Compile Include="SonarRestService.fs" />
-  </ItemGroup>
+	<ItemGroup>
+		<Compile Include="TypeProviders.fs" />
+		<Compile Include="XmlTypeProviders.fs" />
+		<Compile Include="IHttpSonarConnector.fs" />
+		<Compile Include="SqaleDefaultModel.fs" />
+		<Compile Include="SourceService.fs" />
+		<Compile Include="AnalysisService.fs" />
+		<Compile Include="ComponentService.fs" />
+		<Compile Include="DifferencialService.fs" />
+		<Compile Include="HttpSonarConnector.fs" />
+		<Compile Include="IssuesService.fs" />
+		<Compile Include="MeasuresService.fs" />
+		<Compile Include="SettingsService.fs" />
+		<Compile Include="UsersService.fs" />
+		<Compile Include="SonarRestService.fs" />
+	</ItemGroup>
 
-  <ItemGroup>
-    <Content Include="default-model.xml" />
-  </ItemGroup>
+	<ItemGroup>
+		<Content Include="default-model.xml" />
+	</ItemGroup>
 
-  <ItemGroup>
-    <None Include="..\LICENSE.txt">
-      <Pack>True</Pack>
-      <PackagePath></PackagePath>
-    </None>
-    <None Include="..\SonarRestService.licenseheader" />
-  </ItemGroup>
+	<ItemGroup>
+		<None Include="..\LICENSE.txt" Pack="True" PackagePath="" />
+		<None Include="SonarRestService.licenseheader" />
+	</ItemGroup>
 
-  <ItemGroup>
-    <PackageReference Include="FSharp.Data.Signed" Version="3.1.2" />
-  </ItemGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\SonarRestApi\SonarRestApi.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <PackageReference Update="FSharp.Core" Version="4.5.2" />
-  </ItemGroup>
+	<ItemGroup>
+		<PackageReference Include="FSharp.Data" Version="4.2.8" />
+		<ProjectReference Include="..\SonarRestApi\SonarRestApi.csproj" />
+	</ItemGroup>
 
 </Project>
