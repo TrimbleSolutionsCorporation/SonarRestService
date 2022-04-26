@@ -23,8 +23,6 @@ namespace SonarRestService.Types
     [Serializable]
     public class Rule : ICloneable
     {
-        #region Fields
-
         /// <summary>
         ///     The characteristics.
         /// </summary>
@@ -50,10 +48,6 @@ namespace SonarRestService.Types
         /// </summary>
         private SubCategory subcategory;
 
-        #endregion
-
-        #region Constructors and Destructors
-
         /// <summary>
         ///     Initializes a new instance of the <see cref="Rule" /> class.
         /// </summary>
@@ -76,10 +70,6 @@ namespace SonarRestService.Types
             this.SysTags = new ObservableCollection<string>();
             this.Params = new ObservableCollection<RuleParam>();
         }
-
-        #endregion
-
-        #region Public Properties
 
         /// <summary>
         ///     Gets or sets the category.
@@ -388,11 +378,11 @@ namespace SonarRestService.Types
         ///     Gets or sets the tags.
         /// </summary>
         public ObservableCollection<string> Tags { get; set; }
+
+        /// <summary>
+        /// Parameter from server
+        /// </summary>
         public bool IsParamsRetrivedFromServer { get; set; }
-
-        #endregion
-
-        #region Public Methods and Operators
 
         /// <summary>
         ///     The clone.
@@ -429,10 +419,6 @@ namespace SonarRestService.Types
             this.Repo = rule.Repo;
         }
 
-        #endregion
-
-        #region Methods
-
         /// <summary>
         /// The set factor default value.
         /// </summary>
@@ -464,7 +450,5 @@ namespace SonarRestService.Types
                 this.RemediationOffsetTxt = RemediationUnit.MN;
             }
         }
-
-        #endregion
     }
 }

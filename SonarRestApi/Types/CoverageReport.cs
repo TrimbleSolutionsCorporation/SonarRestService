@@ -2,10 +2,11 @@
 {
     using System;
 
-    [Obsolete("Use Project Summary Report")]
+
     /// <summary>
     /// CoverageReport helper
     /// </summary>
+    [Obsolete("Use Project Summary Report")]
     public class CoverageReport
     {
         /// <summary>

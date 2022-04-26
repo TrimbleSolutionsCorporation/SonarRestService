@@ -32,6 +32,9 @@ namespace SonarRestService.Types
             this.KeyType = KeyLookupType.Invalid;
         }
 
+        /// <summary>
+        /// Gets or sets the key type
+        /// </summary>
         public KeyLookupType KeyType { get; set; } 
 
         /// <summary>

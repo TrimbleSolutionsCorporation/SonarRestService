@@ -21,8 +21,6 @@ namespace SonarRestService.Types
     [Serializable]
     public class SonarQubeProperties
     {
-        #region Constructors and Destructors
-
         /// <summary>
         /// Initializes a new instance of the <see cref="SonarQubeProperties"/> class.
         /// </summary>
@@ -44,6 +42,13 @@ namespace SonarRestService.Types
             this.Owner = prop.Owner;
         }
 
+        /// <summary>
+        /// ctor
+        /// </summary>
+        /// <param name="context">context</param>
+        /// <param name="owner">owner</param>
+        /// <param name="key">key</param>
+        /// <param name="value">value</param>
         public SonarQubeProperties(string context, string owner, string key, string value)
         {
             this.Key = key;
@@ -51,10 +56,6 @@ namespace SonarRestService.Types
             this.Context = context;
             this.Owner = owner;
         }
-
-        #endregion
-
-        #region Public Properties
 
         /// <summary>
         ///     Gets or sets the vera arguments.
@@ -75,7 +76,5 @@ namespace SonarRestService.Types
         /// Gets or sets the owner.
         /// </summary>
         public string Owner { get; set; }
-
-        #endregion
     }
 }

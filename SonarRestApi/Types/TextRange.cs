@@ -15,12 +15,30 @@ namespace SonarRestService.Types
 {
     using System;
 
+    /// <summary>
+    /// Text Range
+    /// </summary>
     [Serializable]
     public class TextRange
     {
+        /// <summary>
+        /// Start line
+        /// </summary>
         public int StartLine { get; set; }
+
+        /// <summary>
+        /// Endline
+        /// </summary>
         public int EndLine { get; set; }
+
+        /// <summary>
+        /// start Offset
+        /// </summary>
         public int StartOffset { get; set; }
+
+        /// <summary>
+        /// end offset
+        /// </summary>
         public int EndOffset { get; set; }
     }
 }

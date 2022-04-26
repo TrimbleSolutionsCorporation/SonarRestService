@@ -47,6 +47,7 @@ namespace SonarRestService.Types
         /// <param name="email">
         /// The email.
         /// </param>
+        /// <param name="team">team</param>
         public User(string login, string name, bool active, string email, string team = "")
         {
             this.Login = login;

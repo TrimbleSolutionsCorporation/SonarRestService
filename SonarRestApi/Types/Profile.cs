@@ -26,7 +26,13 @@ namespace SonarRestService.Types
     {
         private readonly ISonarRestService service;
         private readonly ISonarConfiguration conf;
+        private Dictionary<string, Rule> RulesByIternalKey { get; set; }
 
+        /// <summary>
+        /// Constructor for profile
+        /// </summary>
+        /// <param name="service">service</param>
+        /// <param name="conf">config</param>
         public Profile(ISonarRestService service, ISonarConfiguration conf)
         {
             this.conf = conf;
@@ -34,8 +40,6 @@ namespace SonarRestService.Types
             this.Rules = new Dictionary<string, Rule>();
             this.RulesByIternalKey = new Dictionary<string, Rule>();
         }
-
-        private Dictionary<string, Rule> RulesByIternalKey { get; set; }
 
         /// <summary>
         /// Gets or sets a value indicating whether default.
@@ -52,6 +56,9 @@ namespace SonarRestService.Types
         /// </summary>
         public string Name { get; set; }
 
+        /// <summary>
+        /// Key
+        /// </summary>
         public string Key { get; set; }
 
         /// <summary>
@@ -98,19 +105,10 @@ namespace SonarRestService.Types
             }
         }
 
-        private void UpdateRuleData(Rule rule)
-        {
-            if (rule.IsParamsRetrivedFromServer)
-            {
-                return;
-            }
-
-            this.service.UpdateRuleData(this.conf, rule);
-        }
-
-
-        /// <summary>The get all rules.</summary>
-        /// <returns>The <see cref="List"/>.</returns>
+        /// <summary>
+        /// Gets all rules
+        /// </summary>
+        /// <returns>list of rule</returns>
         public List<Rule> GetAllRules()
         {
             return this.Rules.Values.ToList();
@@ -143,6 +141,16 @@ namespace SonarRestService.Types
 
                 this.RulesByIternalKey.Add(rule.InternalKey, rule);
             }
+        }
+
+        private void UpdateRuleData(Rule rule)
+        {
+            if (rule.IsParamsRetrivedFromServer)
+            {
+                return;
+            }
+
+            this.service.UpdateRuleData(this.conf, rule);
         }
     }
 }

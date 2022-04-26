@@ -11,6 +11,9 @@ namespace SonarRestService.Types
     /// </summary>
     public class FieldValue
     {
+        /// <summary>
+        /// Ctor
+        /// </summary>
         public FieldValue()
         {
             this.Values = new List<Tuple<string, string>>();
