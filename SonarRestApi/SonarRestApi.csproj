@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
-		<Version>1.4.0</Version>
+		<Version>1.5.0</Version>
 		<TargetFrameworks>netstandard2.0</TargetFrameworks>
 		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
 		<AssemblyVersion>1.0.0.0</AssemblyVersion>
@@ -34,5 +34,4 @@
 	<ItemGroup>
 		<None Include="..\LICENSE.txt" Pack="True" PackagePath="" />
 	</ItemGroup>
-
 </Project>
