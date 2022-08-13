@@ -66,12 +66,30 @@ type UserServiceTests() =
 
 
     //[<Test>]
+    member test.``UpdateUser`` () =
+        let mockHttpReq =
+            Mock<IHttpSonarConnector>()
+                .Create()
+
+        let conf = ConnectionConfiguration("https://sonar.tekla.com", "", "", 1.0)
+        let service = SonarService(JsonSonarConnector())
+        let users = (service :> ISonarRestService).GetUserList(conf).GetAwaiter().GetResult()
+
+        (service :> ISonarRestService).UpdateUserLogin(conf, "login", "login").Result |> ignore
+
+        let parmas2 = new System.Collections.Generic.Dictionary<string, string>()
+        parmas2.Add("login", "login")
+        parmas2.Add("newExternalIdentity", "@trimble.com")
+        parmas2.Add("newExternalProvider", "saml")
+        (service :> ISonarRestService).UpdateIdentityProvider(conf, parmas2).Result |> ignore
+
+    //[<Test>]
     member test.``Migrate Users to saml`` () =
         let mockHttpReq =
             Mock<IHttpSonarConnector>()
                 .Create()
 
-        let conf = ConnectionConfiguration("https://sonar", "", "", 1.0)
+        let conf = ConnectionConfiguration("https://sonar.tekla.com", "", "", 1.0)
         let service = SonarService(JsonSonarConnector())
         let users = (service :> ISonarRestService).GetUserList(conf).GetAwaiter().GetResult()
 

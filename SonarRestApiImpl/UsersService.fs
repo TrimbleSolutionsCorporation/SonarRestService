@@ -124,6 +124,14 @@ let UpdateUserData(newConf : ISonarConfiguration, httpconnector : IHttpSonarConn
     let responsecontent = httpconnector.HttpSonarPostRequestDic(newConf, url, data)
     responsecontent.StatusCode
 
+let UpdateUserLogin(newConf : ISonarConfiguration, httpconnector : IHttpSonarConnector, oldLogin:string, newLogin:string) =
+    let url = "api/users/update_login"
+    let data = new System.Collections.Generic.Dictionary<string, string>()
+    data.Add("login", oldLogin)
+    data.Add("newLogin", newLogin)
+    let responsecontent = httpconnector.HttpSonarPostRequestDic(newConf, url, data)
+    responsecontent.StatusCode
+
 let UpdateIdentityProvider(newConf : ISonarConfiguration, httpconnector : IHttpSonarConnector, data:System.Collections.Generic.Dictionary<string, string>) =
     let url = "api/users/update_identity_provider"
     let responsecontent = httpconnector.HttpSonarPostRequestDic(newConf, url, data)

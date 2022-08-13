@@ -556,6 +556,10 @@ type SonarService(httpconnector : IHttpSonarConnector) =
             async {
                 return UsersService.UpdateUserData(newConf, httpconnector, data)
             } |> Async.StartAsTask
+        member this.UpdateUserLogin(newConf : ISonarConfiguration, oldLogin:string, newLogin:string) =
+            async {
+                return UsersService.UpdateUserLogin(newConf, httpconnector, oldLogin, newLogin)
+            } |> Async.StartAsTask
         member this.UpdateIdentityProvider(newConf : ISonarConfiguration, data:System.Collections.Generic.Dictionary<string, string>) =
             async {
                 return UsersService.UpdateIdentityProvider(newConf, httpconnector, data)

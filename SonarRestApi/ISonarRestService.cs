@@ -229,6 +229,15 @@
         Task<HttpStatusCode> UpdateUserData(ISonarConfiguration conf, System.Collections.Generic.Dictionary<string, string> data);
 
         /// <summary>
+        /// update login
+        /// </summary>
+        /// <param name="conf">conf</param>
+        /// <param name="oldLogin">oldlogin</param>
+        /// <param name="newLogin">newlogin</param>
+        /// <returns>stats</returns>
+        Task<HttpStatusCode> UpdateUserLogin(ISonarConfiguration conf, string oldLogin, string newLogin);
+        
+        /// <summary>
         /// Create a teams from a team list file
         /// </summary>
         /// <param name="availableUsers"></param>
