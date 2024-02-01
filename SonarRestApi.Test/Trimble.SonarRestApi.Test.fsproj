@@ -3,6 +3,7 @@
   <PropertyGroup>
     <TargetFrameworks>net48</TargetFrameworks>
     <OutputPath>..\BuildDrop\Test</OutputPath>
+	  <NoWarn>1701;1702;NU1803</NoWarn>
   </PropertyGroup>
 
   <ItemGroup>
@@ -113,8 +114,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\SonarRestApiImpl\SonarRestApiImpl.fsproj" />
-    <ProjectReference Include="..\SonarRestApi\SonarRestApi.csproj" />
+    <ProjectReference Include="..\SonarRestApiImpl\Trimble.SonarRestApiImpl.fsproj" />
+    <ProjectReference Include="..\SonarRestApi\Trimble.SonarRestApi.csproj" />
   </ItemGroup>
 
 </Project>

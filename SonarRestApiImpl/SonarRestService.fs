@@ -1159,8 +1159,27 @@ type SonarService(httpconnector : IHttpSonarConnector) =
             getComponentFromResponse(httpconnector.HttpSonarGetRequest(conf, url))
 
         member this.GetResourcesData(conf : ISonarConfiguration, resource : string) =
-            if conf.SonarVersion >= 6.3 then
+            if conf.SonarVersion >= 6.3 && conf.SonarVersion < 8.0 then
                 let url = "/api/components/show?key=" + resource
+                let response = httpconnector.HttpSonarGetRequest(conf, url)
+                let componentData = JsonComponentShow.Parse(response)
+                let resource = new Resource()
+                resource.IdType <- componentData.Component.Id
+                resource.Key <- componentData.Component.Key
+                resource.Name <- componentData.Component.Name
+                let keysElements = componentData.Component.Key.Split(':')
+                if componentData.Component.Name.EndsWith(" " + keysElements.[keysElements.Length - 1]) then
+                    // this is brancnh
+                    resource.IsBranch <- true
+                    resource.BranchName <- keysElements.[keysElements.Length - 1]
+
+                resource.Qualifier <- componentData.Component.Qualifier
+                resource.Path <- componentData.Component.Path
+                let resourcelist = System.Collections.Generic.List<Resource>()
+                resourcelist.Add(resource)
+                resourcelist
+            elif conf.SonarVersion >= 8.0 then
+                let url = "/api/components/show?component=" + resource
                 let response = httpconnector.HttpSonarGetRequest(conf, url)
                 let componentData = JsonComponentShow.Parse(response)
                 let resource = new Resource()
@@ -1323,7 +1342,7 @@ type SonarService(httpconnector : IHttpSonarConnector) =
                                 response <- httpconnector.HttpSonarPutRequest(newConf, "/api/reviews/add_comment", parameters)
                             else
                                 let url = "/api/reviews?violation_id=" + Convert.ToString(idstr) + "&status=OPEN" + GetComment(comment)
-                                response <- httpconnector.HttpSonarRequest(newConf, url, Method.POST)
+                                response <- httpconnector.HttpSonarRequest(newConf, url, Method.Post)
 
                         try
                             let comment = JSonComment.Parse(response.Content)
@@ -1353,7 +1372,7 @@ type SonarService(httpconnector : IHttpSonarConnector) =
                         else
                             if not(idstr.Equals("0")) then
                                 idstr <- Convert.ToString(issue.Id)
-                                let CheckReponse(response : IRestResponse)= 
+                                let CheckReponse(response : RestResponse)= 
                                     if response.StatusCode = Net.HttpStatusCode.OK then
                                         let reviews = IssuesService.getReviewsFromString(response.Content)
                                         issue.Id <- reviews.[0].Id
@@ -1372,7 +1391,7 @@ type SonarService(httpconnector : IHttpSonarConnector) =
                                     CheckReponse(response)
                                 else
                                     let url = "/api/reviews?violation_id=" + Convert.ToString(idstr) + "&status=RESOLVED&resolution=WONTFIX" + GetComment(comment)
-                                    let response = httpconnector.HttpSonarRequest(newConf, url, Method.POST)
+                                    let response = httpconnector.HttpSonarRequest(newConf, url, Method.Post)
                                     CheckReponse(response)
                                     status <- response.StatusCode
                 return true
@@ -1393,7 +1412,7 @@ type SonarService(httpconnector : IHttpSonarConnector) =
                         else
                             if not(idstr.Equals("0")) then
                                 idstr <- Convert.ToString(issue.Id)
-                                let CheckReponse(response : IRestResponse)= 
+                                let CheckReponse(response : RestResponse)= 
                                     if response.StatusCode = Net.HttpStatusCode.OK then
                                         let reviews = IssuesService.getReviewsFromString(response.Content)
                                         issue.Id <- reviews.[0].Id
@@ -1412,7 +1431,7 @@ type SonarService(httpconnector : IHttpSonarConnector) =
                                     CheckReponse(response)
                                 else
                                     let url = "/api/reviews?violation_id=" + Convert.ToString(idstr) + "&status=RESOLVED&resolution=FALSE-POSITIVE" + GetComment(comment)
-                                    let response = httpconnector.HttpSonarRequest(newConf, url, Method.POST)
+                                    let response = httpconnector.HttpSonarRequest(newConf, url, Method.Post)
                                     CheckReponse(response)
                                     status <- response.StatusCode
                 return true
@@ -1453,7 +1472,7 @@ type SonarService(httpconnector : IHttpSonarConnector) =
                             |> ignore
                     else
                         idstr <- Convert.ToString(issue.Id)
-                        let CheckReponse(response : IRestResponse)= 
+                        let CheckReponse(response : RestResponse)= 
                             if response.StatusCode = Net.HttpStatusCode.OK then
                                 let reviews = IssuesService.getReviewsFromString(response.Content)
                                 issue.Id <- reviews.[0].Id
@@ -1472,7 +1491,7 @@ type SonarService(httpconnector : IHttpSonarConnector) =
                             CheckReponse(response)
                         else
                             let url = "/api/reviews?violation_id=" + Convert.ToString(idstr) + "&status=RESOLVED&resolution=FIXED" + GetComment(comment)
-                            let response = httpconnector.HttpSonarRequest(newConf, url, Method.POST)
+                            let response = httpconnector.HttpSonarRequest(newConf, url, Method.Post)
                             CheckReponse(response)
                             status <- response.StatusCode
 
@@ -1497,7 +1516,7 @@ type SonarService(httpconnector : IHttpSonarConnector) =
                                 |> ignore
                         else
                             idstr <- Convert.ToString(issue.Id)
-                            let CheckReponse(response : IRestResponse)= 
+                            let CheckReponse(response : RestResponse)= 
                                 if response.StatusCode = Net.HttpStatusCode.OK then
                                     let reviews = IssuesService.getReviewsFromString(response.Content)
                                     issue.Id <- reviews.[0].Id

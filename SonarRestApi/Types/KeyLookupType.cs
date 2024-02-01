@@ -6,13 +6,13 @@
     public enum KeyLookupType
     {
         /// <summary>
-        /// project guid
-        /// </summary>
-        ProjectGuid = 0,
-        /// <summary>
         /// flat
         /// </summary>
-        Flat = 1,
+        Flat = 0,
+        /// <summary>
+        /// project guid
+        /// </summary>
+        ProjectGuid = 1,
         /// <summary>
         /// module
         /// </summary>

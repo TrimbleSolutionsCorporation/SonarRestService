@@ -38,7 +38,7 @@ type JsonSonarConnector() =
                 client.Authenticator <- new HttpBasicAuthenticator(userConf.Username, userConf.Password)
             else
                 client.Authenticator <- new HttpBasicAuthenticator(userConf.Username, "")
-            let request = new RestRequest(url, Method.PUT);
+            let request = new RestRequest(url, Method.Put);
 
             for elem in data do
                 request.AddParameter(elem.Key, elem.Value) |> ignore
@@ -55,7 +55,7 @@ type JsonSonarConnector() =
                 client.Authenticator <- new HttpBasicAuthenticator(userConf.Username, userConf.Password)
             else
                 client.Authenticator <- new HttpBasicAuthenticator(userConf.Username, "")
-            let request = new RestRequest(url, Method.POST);
+            let request = new RestRequest(url, Method.Post);
 
             for elem in data do
                 request.AddParameter(elem.Key, elem.Value) |> ignore
@@ -73,7 +73,7 @@ type JsonSonarConnector() =
             else
                 client.Authenticator <- new HttpBasicAuthenticator(userConf.Username, "")
 
-            let request = new RestRequest(url, Method.POST);
+            let request = new RestRequest(url, Method.Post);
 
             for elem in data do
                 request.AddParameter(elem.Key, elem.Value) |> ignore
@@ -88,7 +88,7 @@ type JsonSonarConnector() =
                 ""
             else
                 let client = new RestClient(userConf.Hostname)
-                let request = new RestRequest(url, Method.GET)
+                let request = new RestRequest(url, Method.Get)
 
                 request.AddHeader("Accept", "text/json") |> ignore
 

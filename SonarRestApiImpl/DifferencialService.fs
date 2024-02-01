@@ -132,6 +132,17 @@ let GetSummaryProjectReport(conf : ISonarConfiguration, projectIn : Resource, ht
         summaryReport.NewLinesToCover <- GetPeriodValueForMeasure(comp, "new_lines_to_cover")
         summaryReport.LinesToCover <- GetValueForMeasure(comp, "lines_to_cover")
         summaryReport.Issues <- GetValueForMeasure(comp, "violations")
+        summaryReport.BlockerIssues <- GetValueForMeasure(comp, "blocker_violations")
+        summaryReport.CriticalIssues <- GetValueForMeasure(comp, "critical_violations")
+        summaryReport.MajorIssues <- GetValueForMeasure(comp, "major_violations")
+        summaryReport.MinorIssues <- GetValueForMeasure(comp, "minor_violations")
+        summaryReport.InfoIssues <- GetValueForMeasure(comp, "info_violations")
+        summaryReport.NewBlockerIssues <- GetPeriodValueForMeasure(comp, "new_blocker_violations")
+        summaryReport.NewCriticalIssues <- GetPeriodValueForMeasure(comp, "new_critical_violations")
+        summaryReport.NewMajorIssues <- GetPeriodValueForMeasure(comp, "new_major_violations")
+        summaryReport.NewMinorIssues <- GetPeriodValueForMeasure(comp, "new_minor_violations")
+        summaryReport.NewInfoIssues <- GetPeriodValueForMeasure(comp, "new_info_violations")        
+        
         summaryReport.NewIssues <- GetPeriodValueForMeasure(comp, "new_violations")
         summaryReport.NewTechnicalDebt <- GetPeriodValueForMeasure(comp, "new_technical_debt")
         summaryReport.TechnicalDebt <- GetValueForMeasure(comp, "sqale_index")
@@ -146,7 +157,7 @@ let GetSummaryProjectReport(conf : ISonarConfiguration, projectIn : Resource, ht
         else
             sprintf "component=%s" projectIn.Key
 
-    let url = sprintf "/api/measures/component?%s&metricKeys=conditions_to_cover,new_conditions_to_cover,new_lines_to_cover,lines_to_cover,uncovered_lines,new_uncovered_lines,new_uncovered_conditions,uncovered_conditions,new_coverage,ncloc,coverage,new_lines,ncloc_language_distribution,violations,new_violations,new_technical_debt,cognitive_complexity,complexity,sqale_index,lines" compElement
+    let url = sprintf "/api/measures/component?%s&metricKeys=blocker_violations,critical_violations,major_violations,minor_violations,info_violations,new_blocker_violations,new_critical_violations,new_major_violations,new_minor_violations,new_info_violations,conditions_to_cover,new_conditions_to_cover,new_lines_to_cover,lines_to_cover,uncovered_lines,new_uncovered_lines,new_uncovered_conditions,uncovered_conditions,new_coverage,ncloc,coverage,new_lines,ncloc_language_distribution,violations,new_violations,new_technical_debt,cognitive_complexity,complexity,sqale_index,lines" compElement
 
     let responsecontent = httpconnector.HttpSonarGetRequest(conf, url)
     let data = CoverageReportType.Parse(responsecontent)

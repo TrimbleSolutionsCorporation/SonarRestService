@@ -30,6 +30,46 @@
         /// Gets or sets issues
         /// </summary>
         public long Issues { get; set; }
+        /// <summary>
+        /// blocker issues
+        /// </summary>
+        public long BlockerIssues { get; set; }
+        /// <summary>
+        /// critical issues
+        /// </summary>
+        public long CriticalIssues { get; set; }
+        /// <summary>
+        /// major issues
+        /// </summary>
+        public long MajorIssues { get; set; }
+        /// <summary>
+        /// minor issues
+        /// </summary>
+        public long MinorIssues { get; set; }
+        /// <summary>
+        /// info issues
+        /// </summary>
+        public long InfoIssues { get; set; }
+        /// <summary>
+        /// new blocker issues
+        /// </summary>
+        public long NewBlockerIssues { get; set; }
+        /// <summary>
+        /// new critical issues
+        /// </summary>
+        public long NewCriticalIssues { get; set; }
+        /// <summary>
+        /// new major issues
+        /// </summary>
+        public long NewMajorIssues { get; set; }
+        /// <summary>
+        /// new minor issues
+        /// </summary>
+        public long NewMinorIssues { get; set; }
+        /// <summary>
+        /// new info issues
+        /// </summary>
+        public long NewInfoIssues { get; set; }
 
         /// <summary>
         /// Gets or sets new issues

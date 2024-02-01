@@ -75,13 +75,13 @@ type ResourceTests() =
         let conf = ConnectionConfiguration("http://localhost:9000", "jocs1", "jocs1", 4.5)
 
         let mockIRestReponseHttpReq =
-            Mock<IRestResponse>()
+            Mock<RestResponse>()
                 .Setup(fun x -> <@ x.StatusCode @>).Returns(Net.HttpStatusCode.OK)
                 .Setup(fun x -> <@ x.Content @>).Returns(File.ReadAllText(assemblyRunningPath + "/testdata/ResponseToAddCommentOldFormat.txt"))
                 .Create()
 
         let mockIRestReponsePostHttpReq =
-            Mock<IRestResponse>()
+            Mock<RestResponse>()
                 .Setup(fun x -> <@ x.StatusCode @>).Returns(Net.HttpStatusCode.NotFound)
                 .Create()
 
@@ -106,7 +106,7 @@ type ResourceTests() =
         let conf = ConnectionConfiguration("http://localhost:9000", "jocs1", "jocs1", 4.5)
 
         let mockIRestReponsePostHttpReq =
-            Mock<IRestResponse>()
+            Mock<RestResponse>()
                 .Setup(fun x -> <@ x.StatusCode @>).Returns(Net.HttpStatusCode.OK)
                 .Setup(fun x -> <@ x.Content @>).Returns(File.ReadAllText(assemblyRunningPath + "/testdata/commentsReply.txt"))
                 .Create()
@@ -131,13 +131,13 @@ type ResourceTests() =
         let conf = ConnectionConfiguration("http://localhost:9000", "jocs1", "jocs1", 4.5)
 
         let mockIRestReponseHttpReq =
-            Mock<IRestResponse>()
+            Mock<RestResponse>()
                 .Setup(fun x -> <@ x.StatusCode @>).Returns(Net.HttpStatusCode.OK)
                 .Setup(fun x -> <@ x.Content @>).Returns(File.ReadAllText(assemblyRunningPath + "/testdata/ResponseToAddCommentOldFormat.txt"))
                 .Create()
 
         let mockIRestReponsePostHttpReq =
-            Mock<IRestResponse>()
+            Mock<RestResponse>()
                 .Setup(fun x -> <@ x.StatusCode @>).Returns(Net.HttpStatusCode.NotFound)
                 .Create()
 

@@ -37,7 +37,7 @@ type SettingsServiceTest() =
         let conf = ConnectionConfiguration("http://localhost", "admin", "admin", 6.3)
 
         let mockRestResponse =
-            Mock<IRestResponse>()
+            Mock<RestResponse>()
                 .Setup(fun x -> <@ x.StatusCode @>).Returns(Net.HttpStatusCode.NoContent)
                 .Create()
 
@@ -58,7 +58,7 @@ type SettingsServiceTest() =
         let conf = ConnectionConfiguration("http://localhost", "admin", "admin", 6.3)
 
         let mockRestResponse =
-            Mock<IRestResponse>()
+            Mock<RestResponse>()
                 .Setup(fun x -> <@ x.StatusCode @>).Returns(Net.HttpStatusCode.NoContent)
                 .Create()
 
@@ -80,7 +80,7 @@ type SettingsServiceTest() =
         let conf = ConnectionConfiguration("http://localhost", "admin", "admin", 6.3)
 
         let mockRestResponse =
-            Mock<IRestResponse>()
+            Mock<RestResponse>()
                 .Setup(fun x -> <@ x.StatusCode @>).Returns(Net.HttpStatusCode.NoContent)
                 .Create()
 

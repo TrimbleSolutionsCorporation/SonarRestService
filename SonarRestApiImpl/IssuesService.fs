@@ -340,7 +340,11 @@ let SearchForIssuesInResource(userConf:ISonarConfiguration,
                               resource : string,
                               httpconnector:IHttpSonarConnector,
                               logger:IRestLogger) = 
-    let url =  "/api/issues/search?components=" + resource + "&statuses=OPEN,CONFIRMED,REOPENED"
+    let url =
+        if userConf.SonarVersion >= 8.0 then
+            "/api/issues/search?componentKeys=" + resource + "&statuses=OPEN,CONFIRMED,REOPENED"
+        else
+            "/api/issues/search?components=" + resource + "&statuses=OPEN,CONFIRMED,REOPENED"
     try
         let responsecontent = httpconnector.HttpSonarGetRequest(userConf, url)
         try getIssuesFromStringAfter45(responsecontent) with | ex -> getIssuesFromString(responsecontent)

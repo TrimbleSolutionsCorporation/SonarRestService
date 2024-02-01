@@ -47,7 +47,7 @@ type ProjectAnalysisServiceTest() =
     member test.``Create Version in Project`` () =
         let conf = ConnectionConfiguration("http://sonar", "admin", "admin", 6.3)
         let reponse =
-            Mock<IRestResponse>()
+            Mock<RestResponse>()
                 .Setup(fun x -> <@ x.Content @>).Returns(AnalysisService.CreateVersionOk.GetSample().JsonValue.ToString())
                 .Setup(fun x -> <@ x.StatusCode @>).Returns(Net.HttpStatusCode.OK)
                 .Create()

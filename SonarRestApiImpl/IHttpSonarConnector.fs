@@ -18,9 +18,9 @@ open RestSharp
 
 type IHttpSonarConnector = 
   abstract member HttpSonarGetRequest : ISonarConfiguration * string -> string
-  abstract member HttpSonarRequest : ISonarConfiguration * string * Method -> IRestResponse
-  abstract member HttpSonarPutRequest : ISonarConfiguration * string * Map<string, string> -> IRestResponse
-  abstract member HttpSonarPostRequest : ISonarConfiguration * string * Map<string, string> -> IRestResponse
-  abstract member HttpSonarPostRequestDic : ISonarConfiguration * string * System.Collections.Generic.Dictionary<string, string> -> IRestResponse
+  abstract member HttpSonarRequest : ISonarConfiguration * string * Method -> RestResponse
+  abstract member HttpSonarPutRequest : ISonarConfiguration * string * Map<string, string> -> RestResponse
+  abstract member HttpSonarPostRequest : ISonarConfiguration * string * Map<string, string> -> RestResponse
+  abstract member HttpSonarPostRequestDic : ISonarConfiguration * string * System.Collections.Generic.Dictionary<string, string> -> RestResponse
 
 

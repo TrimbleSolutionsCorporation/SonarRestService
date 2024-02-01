@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
-		<Version>1.5.0</Version>
+		<Version>1.8.1</Version>
 		<TargetFrameworks>netstandard2.0</TargetFrameworks>
 		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
 		<SignAssembly>true</SignAssembly>
@@ -19,6 +19,7 @@
 		<PackageProjectUrl>https://github.com/TrimbleSolutionsCorporation/SonarRestService</PackageProjectUrl>
 		<PackageLicenseExpression></PackageLicenseExpression>
 		<PackageLicenseFile>LICENSE.txt</PackageLicenseFile>
+	<NoWarn>1701;1702;NU1803</NoWarn>
 	</PropertyGroup>
 
 	<ItemGroup>
@@ -49,8 +50,10 @@
 
 
 	<ItemGroup>
-		<PackageReference Include="FSharp.Data" Version="4.2.8" />
-		<ProjectReference Include="..\SonarRestApi\SonarRestApi.csproj" />
+		<PackageReference Update="FSharp.Core" Version="8.0.101" />
+		<PackageReference Include="FSharp.Data" Version="6.3.0" />
+		<PackageReference Include="RestSharp" Version="108.0.1" />
+		<ProjectReference Include="..\SonarRestApi\Trimble.SonarRestApi.csproj" />
 	</ItemGroup>
 
 </Project>
