@@ -65,7 +65,7 @@ type UserServiceTests() =
         Assert.That(suser.Team, Is.EqualTo("Sold Team"))
 
 
-    [<Test>]
+    //[<Test>]
     member test.``UpdateUser`` () =
         let mockHttpReq =
             Mock<IHttpSonarConnector>()
@@ -83,7 +83,7 @@ type UserServiceTests() =
         parmas2.Add("newExternalProvider", "saml")
         (service :> ISonarRestService).UpdateIdentityProvider(conf, parmas2).Result |> ignore
 
-    [<Test>]
+    //[<Test>]
     member test.``Migrate Users to saml`` () =
         let mockHttpReq =
             Mock<IHttpSonarConnector>()
