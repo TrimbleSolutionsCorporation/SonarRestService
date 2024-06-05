@@ -89,14 +89,14 @@ let GetSummaryProjectReport(conf : ISonarConfiguration, projectIn : Resource, ht
         if data.IsSome then
             Convert.ToInt64(data.Value.Periods.[0].Value)
         else
-            int64(0)
+            int64(-1)
 
     let GetValueForMeasure(comp:CoverageReportType.Component, metric:string) =
         let data = comp.Measures |> Seq.tryFind (fun meas -> meas.Metric = metric)
         if data.IsSome then
             Convert.ToInt64(data.Value.Value.Number.Value)
         else
-            int64(0)
+            int64(-1)
 
     let AddComponentToReport(comp:CoverageReportType.Component) = 
         let resource = new Resource()
@@ -111,14 +111,19 @@ let GetSummaryProjectReport(conf : ISonarConfiguration, projectIn : Resource, ht
         let newcov = comp.Measures |> Seq.tryFind (fun meas -> meas.Metric = "new_coverage")
         if newcov.IsSome then
             summaryReport.NewCoverage <- newcov.Value.Periods.[0].Value
+        else
+            summaryReport.NewCoverage <- -1
 
         let langdist = comp.Measures |> Seq.tryFind (fun meas -> meas.Metric = "ncloc_language_distribution")
         if langdist.IsSome then
             summaryReport.LinesOfCodeLangDistribution <- langdist.Value.Value.String.Value
 
+            
         let newcond = comp.Measures |> Seq.tryFind (fun meas -> meas.Metric = "coverage")
         if newcond.IsSome then
             summaryReport.Coverage <- Convert.ToDecimal(newcond.Value.Value.Number.Value)
+        else
+            summaryReport.Coverage <- -1
 
         summaryReport.NewLines <- GetPeriodValueForMeasure(comp, "new_lines")
         summaryReport.Lines <- GetValueForMeasure(comp, "lines")
