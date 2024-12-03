@@ -32,12 +32,13 @@ type JsonSonarConnector() =
 
     interface IHttpSonarConnector with
         member this.HttpSonarPutRequest(userConf : ISonarConfiguration, url : string, data : Map<string, string>) =
-
-            let client = new RestClient(userConf.Hostname)
+            let options = new RestClientOptions(userConf.Hostname)
             if userConf.Username <> "" && userConf.Password <> "" then                    
-                client.Authenticator <- new HttpBasicAuthenticator(userConf.Username, userConf.Password)
+                options.Authenticator <- new HttpBasicAuthenticator(userConf.Username, userConf.Password)
             else
-                client.Authenticator <- new HttpBasicAuthenticator(userConf.Username, "")
+                options.Authenticator <- new HttpBasicAuthenticator(userConf.Username, "")
+            let client = new RestClient(options)
+
             let request = new RestRequest(url, Method.Put);
 
             for elem in data do
@@ -49,12 +50,13 @@ type JsonSonarConnector() =
             client.Execute(request)
 
         member this.HttpSonarPostRequest(userConf : ISonarConfiguration, url : string, data : Map<string, string>) =
-
-            let client = new RestClient(userConf.Hostname)
+            let options = new RestClientOptions(userConf.Hostname)
             if userConf.Username <> "" && userConf.Password <> "" then                    
-                client.Authenticator <- new HttpBasicAuthenticator(userConf.Username, userConf.Password)
+                options.Authenticator <- new HttpBasicAuthenticator(userConf.Username, userConf.Password)
             else
-                client.Authenticator <- new HttpBasicAuthenticator(userConf.Username, "")
+                options.Authenticator <- new HttpBasicAuthenticator(userConf.Username, "")
+            let client = new RestClient(options)
+
             let request = new RestRequest(url, Method.Post);
 
             for elem in data do
@@ -66,12 +68,12 @@ type JsonSonarConnector() =
             client.Execute(request)
 
         member this.HttpSonarPostRequestDic(userConf : ISonarConfiguration, url : string, data : System.Collections.Generic.Dictionary<string, string>) =
-
-            let client = new RestClient(userConf.Hostname)
+            let options = new RestClientOptions(userConf.Hostname)
             if userConf.Username <> "" && userConf.Password <> "" then                    
-                client.Authenticator <- new HttpBasicAuthenticator(userConf.Username, userConf.Password)
+                options.Authenticator <- new HttpBasicAuthenticator(userConf.Username, userConf.Password)
             else
-                client.Authenticator <- new HttpBasicAuthenticator(userConf.Username, "")
+                options.Authenticator <- new HttpBasicAuthenticator(userConf.Username, "")
+            let client = new RestClient(options)
 
             let request = new RestRequest(url, Method.Post);
 
@@ -87,15 +89,15 @@ type JsonSonarConnector() =
             if obj.ReferenceEquals(userConf, null) then
                 ""
             else
-                let client = new RestClient(userConf.Hostname)
+                let options = new RestClientOptions(userConf.Hostname)
+                if userConf.Username <> "" && userConf.Password <> "" then                    
+                    options.Authenticator <- new HttpBasicAuthenticator(userConf.Username, userConf.Password)
+                else
+                    options.Authenticator <- new HttpBasicAuthenticator(userConf.Username, "")
+                let client = new RestClient(options)
                 let request = new RestRequest(url, Method.Get)
 
                 request.AddHeader("Accept", "text/json") |> ignore
-
-                if userConf.Username <> "" && userConf.Password <> "" then                    
-                    client.Authenticator <- new HttpBasicAuthenticator(userConf.Username, userConf.Password)
-                else
-                    client.Authenticator <- new HttpBasicAuthenticator(userConf.Username, "")
                 
                 let addLine (line:string) =
                     if not(String.IsNullOrEmpty(Environment.GetEnvironmentVariable("VSSONAREXTENSIONDEBUG"))) then
@@ -114,11 +116,12 @@ type JsonSonarConnector() =
                     raise ex
 
         member this.HttpSonarRequest(userconf : ISonarConfiguration, urltosue : string, methodin : Method) =
-            let client = new RestClient(userconf.Hostname)
+            let options = new RestClientOptions(userconf.Hostname)
             if userconf.Username <> "" && userconf.Password <> "" then                    
-                client.Authenticator <- new HttpBasicAuthenticator(userconf.Username, userconf.Password)
+                options.Authenticator <- new HttpBasicAuthenticator(userconf.Username, userconf.Password)
             else
-                client.Authenticator <- new HttpBasicAuthenticator(userconf.Username, "")
+                options.Authenticator <- new HttpBasicAuthenticator(userconf.Username, "")
+            let client = new RestClient(options)
             let request = new RestRequest(urltosue, methodin)
             //request.AddHeader(HttpRequestHeader.Accept.ToString(), "text/xml") |> ignore
             request.RequestFormat <- DataFormat.Json

@@ -286,12 +286,12 @@ type SonarService(httpconnector : IHttpSonarConnector) =
         source
 
     let QuerySonar(userconf : ISonarConfiguration, urltosue : string, methodin : Method) =
-        let client = new RestClient(userconf.Hostname)
-        client.Authenticator <- new HttpBasicAuthenticator(userconf.Username, userconf.Password)
+        let options = new RestClientOptions(userconf.Hostname)
+        options.Authenticator <- new HttpBasicAuthenticator(userconf.Username, userconf.Password)
+        let client = new RestClient(options)        
         let request = new RestRequest(urltosue, methodin)
         request.AddHeader(HttpRequestHeader.Accept.ToString(), "text/xml") |> ignore
         client.Execute(request)
-
 
 
     let CreateRuleInProfile2(parsedDataRule:JsonRule.Rule, profile : Profile)=
