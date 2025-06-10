@@ -24,6 +24,11 @@ namespace SonarRestService.Types
         string Hostname { get; }
 
         /// <summary>
+        /// gets token
+        /// </summary>
+        string Token { get; }
+
+        /// <summary>
         /// Gets the username.
         /// </summary>
         string Username { get; }

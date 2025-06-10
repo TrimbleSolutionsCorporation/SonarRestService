@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
-		<Version>1.9.0</Version>
+		<Version>2.0.0</Version>
 		<TargetFrameworks>netstandard2.0</TargetFrameworks>
 		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
 		<SignAssembly>true</SignAssembly>
@@ -9,8 +9,8 @@
 		<OutputPath>..\BuildDrop\</OutputPath>
 		<Authors>Jorge Costa</Authors>
 		<Company>Trimble Solutions Corporation</Company>
-		<AssemblyVersion>1.0.0.0</AssemblyVersion>
-		<FileVersion>1.0.0.0</FileVersion>
+		<AssemblyVersion>2.0.0.0</AssemblyVersion>
+		<FileVersion>2.0.0.0</FileVersion>
 		<repositoryUrl>https://github.com/TrimbleSolutionsCorporation/SonarRestService.git</repositoryUrl>
 		<Description>SonarQube rest api for .net languages</Description>
 		<Copyright>Copyright © 2020 Trimble Solutions Corporation.</Copyright>

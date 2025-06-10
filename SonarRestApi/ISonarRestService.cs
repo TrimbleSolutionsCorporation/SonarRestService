@@ -6,6 +6,8 @@
     using System.Threading;
     using System.Threading.Tasks;
 
+    using Trimble.SonarRestApi.Types;
+
     using Types;
 
     /// <summary>
@@ -368,6 +370,16 @@
         Task<string> CreateVersion(ISonarConfiguration props, Resource project, string version, DateTime date, CancellationToken token, IRestLogger logger);
 
         /// <summary>
+        /// gets analysis for project
+        /// </summary>
+        /// <param name="props">props</param>
+        /// <param name="project">resource</param>
+        /// <param name="token">token</param>
+        /// <param name="logger">logger</param>
+        /// <returns>list of analysis</returns>
+        Task<List<Analysis>> GetAnalysis(ISonarConfiguration props, Resource project, CancellationToken token, IRestLogger logger);
+
+        /// <summary>
         /// Gets the coverage report on new code on leak.
         /// </summary>
         /// <param name="props">The props.</param>
@@ -376,18 +388,6 @@
         /// <param name="logger">logger</param>
         /// <returns>coverage differential</returns>
         Task<Dictionary<string, CoverageDifferencial>> GetCoverageReportOnNewCodeOnLeak(ISonarConfiguration props, Resource project, CancellationToken token, IRestLogger logger);
-
-
-        /// <summary>
-        /// Gets the coverage report.
-        /// </summary>
-        /// <param name="props">The props.</param>
-        /// <param name="project">The project.</param>
-        /// <param name="token">The token.</param>
-        /// <param name="logger">logger</param>
-        /// <returns>coverage report, obsolete</returns>
-        [Obsolete("Use GetCoverageReportOnNewCodeOnLeak")]
-        Task<Dictionary<string, CoverageReport>> GetCoverageReport(ISonarConfiguration props, Resource project, CancellationToken token, IRestLogger logger);
 
         /// <summary>
         /// Gets the summary project report., includes new_coverage,ncloc,coverage,new_lines,ncloc_language_distribution,violations,new_violations,new_technical_debt,cognitive_complexity,complexity,lines,sqale_index

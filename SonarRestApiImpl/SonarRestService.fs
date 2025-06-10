@@ -150,11 +150,12 @@ type SonarService(httpconnector : IHttpSonarConnector) =
         let parsed = JsonQualityProfiles.Parse(responsecontent)
         let profiles = new System.Collections.Generic.List<Profile>()
 
-        for eachprofile in parsed do
+        for eachprofile in parsed.Profiles do
             let newProfile = new Profile(rest, conf)
-            newProfile.Default <- eachprofile.Default
+            newProfile.Default <- eachprofile.IsDefault
             newProfile.Language <- eachprofile.Language
             newProfile.Name <- eachprofile.Name
+            newProfile.Key <- eachprofile.Key
 
             let profileRules = new System.Collections.Generic.List<Rule>()
             let profileAlerts = new System.Collections.Generic.List<Alert>()
@@ -588,6 +589,11 @@ type SonarService(httpconnector : IHttpSonarConnector) =
         // ================================
         // Project Analysis Service Calls
         // ================================
+        member this.GetAnalysis(conf: ISonarConfiguration, project: Resource, toke:CancellationToken, logger:IRestLogger) =
+            async {
+                return AnalysisService.GetAnalysis(conf, project, httpconnector)
+            } |> Async.StartAsTask
+
         member this.CreateVersion(conf: ISonarConfiguration, project: Resource, version: string, date : DateTime, toke:CancellationToken, logger:IRestLogger) =
             async {
                 let id, date, error = AnalysisService.GetAnalysisId(conf, project, date, httpconnector)
@@ -606,11 +612,6 @@ type SonarService(httpconnector : IHttpSonarConnector) =
         member this.GetSummaryProjectReport(conf: ISonarConfiguration, project: Resource, token:CancellationToken, logger:IRestLogger) =
             async {
                 return DifferencialService.GetSummaryProjectReport(conf, project, httpconnector)
-            } |> Async.StartAsTask
-
-        member this.GetCoverageReport(conf: ISonarConfiguration, project: Resource, token:CancellationToken, logger:IRestLogger) =
-            async {
-                return DifferencialService.GetCoverageReport(conf, project, httpconnector)
             } |> Async.StartAsTask
            
         // ======================
@@ -1035,27 +1036,16 @@ type SonarService(httpconnector : IHttpSonarConnector) =
         member this.GetAvailableProfiles(conf : ISonarConfiguration) = 
             
             let profiles = new System.Collections.Generic.List<Profile>()
-            if conf.SonarVersion < 8.0 then
-              let reply = httpconnector.HttpSonarGetRequest(conf, "/api/profiles/list")
-              let data = JsonQualityProfiles.Parse(reply)
-              for profile in data do
-                  let newprofile = new Profile(this :> ISonarRestService, conf)
-                  newprofile.Language <- profile.Language
-                  newprofile.Name <- profile.Name
-                  newprofile.Default <- profile.Default
-                  profiles.Add(newprofile)
-              profiles
-            else
-              let reply = httpconnector.HttpSonarGetRequest(conf, "/api/qualityprofiles/search")
-              let data = JsonQualityProfiles80.Parse(reply)
-              for profile in data.Profiles do
-                  let newprofile = new Profile(this :> ISonarRestService, conf)
-                  newprofile.Language <- profile.Language
-                  newprofile.Name <- profile.Name
-                  newprofile.Default <- profile.IsDefault
-                  newprofile.Key <- profile.Key
-                  profiles.Add(newprofile)
-              profiles
+            let reply = httpconnector.HttpSonarGetRequest(conf, "/api/qualityprofiles/search")
+            let data = JsonQualityProfiles80.Parse(reply)
+            for profile in data.Profiles do
+                let newprofile = new Profile(this :> ISonarRestService, conf)
+                newprofile.Language <- profile.Language
+                newprofile.Name <- profile.Name
+                newprofile.Default <- profile.IsDefault
+                newprofile.Key <- profile.Key
+                profiles.Add(newprofile)
+            profiles
 
         member this.GetProjects(newConf:ISonarConfiguration) = 
             let projects = new System.Collections.Generic.List<SonarProject>()
@@ -1224,30 +1214,13 @@ type SonarService(httpconnector : IHttpSonarConnector) =
                     else
                         project.Key
                     
-            if conf.SonarVersion >= 5.2 then
-                let url = "/api/qualityprofiles/search?projectKey=" + resource
-                let response = httpconnector.HttpSonarGetRequest(conf, url)
-                let profilesJson = JsonQualityProfiles63.Parse(response)
-                let profiles = new System.Collections.Generic.List<Profile>()
-
-                let AddProfile(profile:JsonQualityProfiles63.Profile) =
-                    let newProfile = new Profile(this :> ISonarRestService, conf)
-                    newProfile.Key <- profile.Key
-                    newProfile.Name <- profile.Name
-                    newProfile.Language <- profile.Language
-                    profiles.Add(newProfile)
-
-                profilesJson.Profiles |> Seq.iter (fun profile -> AddProfile(profile))
-
-                profiles
-            else
-                let url =
-                    if conf.SonarVersion < 8.0 then
-                        "/api/profiles/list?project=" + resource
-                    else
-                        "/api/qualityprofiles/search?project=" + resource
+            let url =
+                if conf.SonarVersion < 8.0 then
+                    "/api/profiles/list?project=" + resource
+                else
+                    "/api/qualityprofiles/search?project=" + resource
                
-                GetQualityProfilesFromContent(httpconnector.HttpSonarGetRequest(conf, url), conf, this :> ISonarRestService)
+            GetQualityProfilesFromContent(httpconnector.HttpSonarGetRequest(conf, url), conf, this :> ISonarRestService)
                         
         member this.GetQualityProfilesForProject(conf : ISonarConfiguration, project : Resource, language : string) = 
             let resource =

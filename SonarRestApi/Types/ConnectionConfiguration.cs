@@ -30,6 +30,8 @@ namespace SonarRestService.Types
         /// </summary>
         private readonly string hostname;
 
+        private readonly string token;
+
         /// <summary>
         ///     The password.
         /// </summary>
@@ -79,6 +81,29 @@ namespace SonarRestService.Types
             }
         }
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ConnectionConfiguration" /> class.
+        /// </summary>
+        /// <param name="hostname">The hostname.</param>
+        /// <param name="token">token</param>
+        /// <param name="sonarVersion">The sonar version.</param>
+        public ConnectionConfiguration(string hostname, string token, double sonarVersion)
+        {
+            this.hostname = hostname;
+            this.token = token;
+            this.SonarVersion = sonarVersion;
+
+            this.IsOk = true;
+            if (password == null)
+            {
+                this.password = string.Empty;
+            }
+            if (username == null)
+            {
+                this.username = string.Empty;
+            }
+        }
+
         #endregion
 
         #region Public Properties
@@ -92,6 +117,14 @@ namespace SonarRestService.Types
             {
                 return this.hostname;
             }
+        }
+
+        /// <summary>
+        /// gets token
+        /// </summary>
+        public string Token
+        {
+            get { return this.token; }
         }
 
         /// <summary>

@@ -37,6 +37,10 @@ type JsonSonarConnector() =
                 options.Authenticator <- new HttpBasicAuthenticator(userConf.Username, userConf.Password)
             else
                 options.Authenticator <- new HttpBasicAuthenticator(userConf.Username, "")
+
+            if userConf.Token <> "" then
+                options.Authenticator <- new JwtAuthenticator(userConf.Token)
+
             let client = new RestClient(options)
 
             let request = new RestRequest(url, Method.Put);
@@ -55,6 +59,10 @@ type JsonSonarConnector() =
                 options.Authenticator <- new HttpBasicAuthenticator(userConf.Username, userConf.Password)
             else
                 options.Authenticator <- new HttpBasicAuthenticator(userConf.Username, "")
+
+            if userConf.Token <> "" then
+                options.Authenticator <- new JwtAuthenticator(userConf.Token)
+
             let client = new RestClient(options)
 
             let request = new RestRequest(url, Method.Post);
@@ -73,6 +81,10 @@ type JsonSonarConnector() =
                 options.Authenticator <- new HttpBasicAuthenticator(userConf.Username, userConf.Password)
             else
                 options.Authenticator <- new HttpBasicAuthenticator(userConf.Username, "")
+
+            if userConf.Token <> "" then
+                options.Authenticator <- new JwtAuthenticator(userConf.Token)
+
             let client = new RestClient(options)
 
             let request = new RestRequest(url, Method.Post);
@@ -80,7 +92,6 @@ type JsonSonarConnector() =
             for elem in data do
                 request.AddParameter(elem.Key, elem.Value) |> ignore
 
-            //request.AddHeader(HttpRequestHeader.Accept.ToString(), "text/xml") |> ignore
             request.RequestFormat <- DataFormat.Json
 
             client.Execute(request)
@@ -94,6 +105,10 @@ type JsonSonarConnector() =
                     options.Authenticator <- new HttpBasicAuthenticator(userConf.Username, userConf.Password)
                 else
                     options.Authenticator <- new HttpBasicAuthenticator(userConf.Username, "")
+
+                if userConf.Token <> "" then
+                    options.Authenticator <- new HttpBasicAuthenticator(userConf.Token, "")
+
                 let client = new RestClient(options)
                 let request = new RestRequest(url, Method.Get)
 
@@ -121,6 +136,10 @@ type JsonSonarConnector() =
                 options.Authenticator <- new HttpBasicAuthenticator(userconf.Username, userconf.Password)
             else
                 options.Authenticator <- new HttpBasicAuthenticator(userconf.Username, "")
+
+            if userconf.Token <> "" then
+                options.Authenticator <- new HttpBasicAuthenticator(userconf.Token, "")
+            
             let client = new RestClient(options)
             let request = new RestRequest(urltosue, methodin)
             //request.AddHeader(HttpRequestHeader.Accept.ToString(), "text/xml") |> ignore

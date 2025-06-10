@@ -353,18 +353,51 @@ type JsonProjectIndex = JsonProvider<""" [
   }
 ] """>
 
-type JsonQualityProfiles = JsonProvider<""" [
-  {
-    "name": "Sonar way with Findbugs",
-    "language": "java",
-    "default": false
-  },
-  {
-    "name": "Sonar way",
-    "language": "java",
-    "default": false
-  }
-] """>
+type JsonQualityProfiles = JsonProvider<""" {
+    "profiles": [
+        {
+            "key": "dasda",
+            "name": "Sonar way",
+            "language": "azureresourcemanager",
+            "languageName": "AzureResourceManager",
+            "isInherited": false,
+            "isDefault": true,
+            "activeRuleCount": 31,
+            "activeDeprecatedRuleCount": 0,
+            "rulesUpdatedAt": "2025-05-30T19:29:06+0000",
+            "isBuiltIn": true,
+            "actions": {
+                "edit": false,
+                "setAsDefault": false,
+                "copy": true,
+                "associateProjects": false,
+                "delete": false
+            }
+        },
+        {
+            "key": "AYp-e5wL5tFv8WoIWaqu",
+            "name": "Sonar way",
+            "language": "cloudformation",
+            "languageName": "CloudFormation",
+            "isInherited": false,
+            "isDefault": true,
+            "activeRuleCount": 26,
+            "activeDeprecatedRuleCount": 0,
+            "rulesUpdatedAt": "2025-05-30T19:29:03+0000",
+            "isBuiltIn": true,
+            "actions": {
+                "edit": false,
+                "setAsDefault": false,
+                "copy": true,
+                "associateProjects": false,
+                "delete": false
+            }
+        }
+    ],
+    "actions": {
+        "create": true
+    }
+} """>
 
 type JsonQualityProfiles80 = JsonProvider<"""
   {
