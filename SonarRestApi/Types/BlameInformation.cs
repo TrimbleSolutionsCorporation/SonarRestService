@@ -48,6 +48,11 @@
         public string Summary { get; set; }
 
         /// <summary>
+        /// Gets or sets the revision
+        /// </summary>
+        public string Revision { get; set; }
+
+        /// <summary>
         /// Gets or sets the unique identifier.
         /// </summary>
         /// <value>

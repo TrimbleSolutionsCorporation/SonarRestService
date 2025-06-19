@@ -14,6 +14,7 @@
 namespace SonarRestService.Types
 {
     using System;
+    using System.Collections.Generic;
 
     /// <summary>
     /// The source.
@@ -53,6 +54,16 @@ namespace SonarRestService.Types
         /// The SCM revision.
         /// </value>
         public string ScmRevision { get; set; }
+
+        /// <summary>
+        /// Gets team
+        /// </summary>
+        public string Team { get; set; }
+
+        /// <summary>
+        /// tickets
+        /// </summary>
+        public List<string> Tickets { get; set; }
 
         /// <summary>
         /// Gets or sets the SCM author.

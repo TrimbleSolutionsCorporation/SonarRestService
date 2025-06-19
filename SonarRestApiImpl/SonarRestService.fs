@@ -657,6 +657,7 @@ type SonarService(httpconnector : IHttpSonarConnector) =
                 blame.Author <- scmLine.Strings.[1]
                 blame.Date <- scmLine.DateTime.DateTime
                 blame.Email <- scmLine.Strings.[1]
+                blame.Revision <- scmLine.Strings.[3]
                 blame.Line <- scmLine.Number
 
                 return blame

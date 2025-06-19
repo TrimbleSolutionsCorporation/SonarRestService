@@ -85,6 +85,16 @@ namespace SonarRestService.Types
         public int Line { get; set; }
 
         /// <summary>
+        /// Revision
+        /// </summary>
+        public string Revision { get; set; }
+
+        /// <summary>
+        /// gets or sets the tickets.
+        /// </summary>
+        public List<string> Tickets { get; set; }
+
+        /// <summary>
         /// Gets or set the text range
         /// </summary>
         public TextRange TextRange { get; set; }
